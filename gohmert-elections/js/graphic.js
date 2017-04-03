@@ -3,87 +3,93 @@ var pymChild = null;
 var isMobile = false;
 
 DATA = [{
-    'year': 2016,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 73.9
+    'seat': '1st District',
+    'years': [{
+        'year': 2016,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 73.9
+        }, {
+            'race': 'Primary',
+            'pctWon': 82.0
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': 82.0
-    }]
-}, {
-    'year': 2014,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 77.5
+        'year': 2014,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 77.5
+        }, {
+            'race': 'Primary',
+            'pctWon': NaN
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': NaN
-    }]
-}, {
-    'year': 2012,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 71.4
+        'year': 2012,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 71.4
+        }, {
+            'race': 'Primary',
+            'pctWon': NaN
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': NaN
-    }]
-}, {
-    'year': 2010,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 89.7
+        'year': 2010,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 89.7
+        }, {
+            'race': 'Primary',
+            'pctWon': NaN
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': NaN
-    }]
-}, {
-    'year': 2008,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 87.6
+        'year': 2008,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 87.6
+        }, {
+            'race': 'Primary',
+            'pctWon': NaN
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': NaN
-    }]
-}, {
-    'year': 2006,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 68.0
+        'year': 2006,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 68.0
+        }, {
+            'race': 'Primary',
+            'pctWon': NaN
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': NaN
+        'year': 2004,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 61.5
+        }, {
+            'race': 'Primary',
+            'pctWon': 41.7
+        }]
     }]
 }, {
-    'year': 2004,
-    'races': [{
-        'seat': '1st District',
-        'pctWon': 61.5
+    'seat': '7th District Judge',
+    'years': [{
+        'year': 2000,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': NaN
+        }]
     }, {
-        'seat': 'Primary',
-        'pctWon': 41.7
+        'year': 1996,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': NaN
+        }]
+    }, {
+        'year': 1992,
+        'races': [{
+            'race': 'TKTK',
+            'pctWon': 58.5
+        }]
     }]
-}, {
-    'year': 2000,
-    'races': [{
-        'seat': '7th District Judge',
-        'pctWon': NaN
-    }]
-}, {
-    'year': 1996,
-    'races': [{
-        'seat': '7th District Judge',
-        'pctWon': NaN
-    }]
-}, {
-    'year': 1992,
-    'races': [{
-        'seat': '7th District Judge',
-        'pctWon': 58.5
-    }]
-}]
+}];
 
 /*
  * Initialize the graphic.
@@ -146,8 +152,8 @@ var renderBarChart = function(config) {
     var yearWidth = 45;
     var yearGap = 5;
 
-    var seatWidth = 140;
-    var seatGap = 5;
+    var raceWidth = 140;
+    var raceGap = 5;
 
     var valueGap = 6;
 
@@ -163,9 +169,9 @@ var renderBarChart = function(config) {
 
     // Calculate actual chart dimensions
     var chartWidth = config['width'] - margins['left'] - margins['right'];
-    var chartHeight = ((barHeight + barGap) * 17);
+    var chartHeight = ((barHeight + barGap) * 19);
 
-    var plotWidth = chartWidth - (yearWidth + yearGap + seatWidth + seatGap);
+    var plotWidth = chartWidth - (yearWidth + yearGap + raceWidth + raceGap);
 
     // Clear existing graphic (for redraw)
     var containerElement = d3.select(config['container']);
@@ -184,7 +190,7 @@ var renderBarChart = function(config) {
         .attr('transform', makeTranslate(margins['left'], margins['top']));
 
     var plotElement = chartElement.append('g')
-        .attr('transform', makeTranslate(yearWidth + yearGap + seatWidth + seatGap, 0))
+        .attr('transform', makeTranslate(yearWidth + yearGap + raceWidth + raceGap, 0))
 
     /*
      * Create D3 scale objects.
@@ -229,61 +235,77 @@ var renderBarChart = function(config) {
 
     var totalRaces = 0;
 
-    _.each(DATA, function(yearData, i) {
-        var year = yearData['year'];
-        var races = yearData['races'];
+    _.each(DATA, function(seatData) {
+        var seat = seatData['seat'];
+        var years = seatData['years'];
 
-        var yearElement = chartElement.append('g')
-            .attr('class', 'year');
+        var seatElement = chartElement.append('g')
+            .attr('class', 'seat');
 
-        _.each(races, function(raceData, j) {
-            var seat = raceData['seat'];
-            var pctWon = raceData['pctWon'];
+        seatElement.append('text')
+            .attr('class', 'seat-label')
+            .attr('y', totalRaces * (barHeight + barGap))
+            .attr('dy', (barHeight / 2) + 3)
+            .text(seat);
 
-            var raceElement = yearElement.append('g')
-                .attr('class', 'race')
-                .attr('transform', makeTranslate(0, totalRaces * (barHeight + barGap)))
+        totalRaces += 1;
 
-            if (j == 0) {
-                raceElement.append('text')
-                    .attr('class', 'year-label')
-                    .attr('dy', (barHeight / 2) + 3)
-                    .text(year);
-            }
+        _.each(years, function(yearData, i) {
+            var year = yearData['year'];
+            var races = yearData['races'];
 
-            raceElement.append('text')
-                .attr('class', 'seat-label')
-                .attr('x', yearWidth + yearGap)
-                .attr('dy', (barHeight / 2) + 3)
-                .text(seat);
+            var yearElement = chartElement.append('g')
+                .attr('class', 'year');
 
-            if (_.isNaN(pctWon)) {
-                raceElement.append('text')
-                    .attr('class', 'unopposed-label')
-                    .attr('x', yearWidth + yearGap + seatWidth + seatGap)
-                    .attr('dy', (barHeight / 2) + 3)
-                    .text('Unopposed')
-            } else {
-                plotElement.append('rect')
-                    .attr('class', 'pct-won')
-                    .attr('x', 0)
-                    .attr('width', xScale(pctWon))
-                    .attr('y', totalRaces * (barHeight + barGap))
-                    .attr('height', barHeight);
+            _.each(races, function(raceData, j) {
+                var race = raceData['race'];
+                var pctWon = raceData['pctWon'];
+
+                var raceElement = yearElement.append('g')
+                    .attr('class', 'race')
+                    .attr('transform', makeTranslate(0, totalRaces * (barHeight + barGap)))
+
+                if (j == 0) {
+                    raceElement.append('text')
+                        .attr('class', 'year-label')
+                        .attr('dy', (barHeight / 2) + 3)
+                        .text(year);
+                }
 
                 raceElement.append('text')
-                    .attr('class', 'value-label')
-                    .attr('x', yearWidth + yearGap + seatWidth + seatGap + valueGap + xScale(pctWon))
+                    .attr('class', 'race-label')
+                    .attr('x', yearWidth + yearGap)
                     .attr('dy', (barHeight / 2) + 3)
-                    .text(pctWon + '%');
-            }
+                    .text(race);
 
-            totalRaces += 1;
-        })
+                if (_.isNaN(pctWon)) {
+                    raceElement.append('text')
+                        .attr('class', 'unopposed-label')
+                        .attr('x', yearWidth + yearGap + raceWidth + raceGap)
+                        .attr('dy', (barHeight / 2) + 3)
+                        .text('Unopposed')
+                } else {
+                    plotElement.append('rect')
+                        .attr('class', 'pct-won')
+                        .attr('x', 0)
+                        .attr('width', xScale(pctWon))
+                        .attr('y', totalRaces * (barHeight + barGap))
+                        .attr('height', barHeight);
 
-        yearElement.selectAll('g')
-            .data(races)
-    })
+                    raceElement.append('text')
+                        .attr('class', 'value-label')
+                        .attr('x', yearWidth + yearGap + raceWidth + raceGap + valueGap + xScale(pctWon))
+                        .attr('dy', (barHeight / 2) + 3)
+                        .text(pctWon + '%');
+                }
+
+                totalRaces += 1;
+            });
+
+            yearElement.selectAll('g')
+                .data(races)
+        });
+    });
 
     chartElement.append('g')
         .selectAll('g')
