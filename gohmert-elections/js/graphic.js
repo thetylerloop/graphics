@@ -5,7 +5,7 @@ var isMobile = false;
 DATA = [{
     'seat': 'House of Representatives, Texas 1st District',
     'years': [{
-        'year': 2016,
+        'year': '2016',
         'races': [{
             'race': 'general',
             'pctWon': 73.9
@@ -14,7 +14,7 @@ DATA = [{
             'pctWon': 82.0
         }]
     }, {
-        'year': 2014,
+        'year': '2014',
         'races': [{
             'race': 'general',
             'pctWon': 77.5
@@ -23,7 +23,7 @@ DATA = [{
             'pctWon': 'Unopposed in primary'
         }]
     }, {
-        'year': 2012,
+        'year': '2012',
         'races': [{
             'race': 'general',
             'pctWon': 71.4
@@ -32,7 +32,7 @@ DATA = [{
             'pctWon': 'Unopposed in primary'
         }]
     }, {
-        'year': 2010,
+        'year': '2010',
         'races': [{
             'race': 'general',
             'pctWon': 89.7
@@ -41,7 +41,7 @@ DATA = [{
             'pctWon': 'Unopposed in primary'
         }]
     }, {
-        'year': 2008,
+        'year': '2008',
         'races': [{
             'race': 'general',
             'pctWon': 87.6
@@ -50,7 +50,7 @@ DATA = [{
             'pctWon': 'Unopposed in primary'
         }]
     }, {
-        'year': 2006,
+        'year': '2006',
         'races': [{
             'race': 'general',
             'pctWon': 68.0
@@ -59,7 +59,7 @@ DATA = [{
             'pctWon': 'Unopposed in primary'
         }]
     }, {
-        'year': 2004,
+        'year': '2004*',
         'races': [{
             'race': 'general',
             'pctWon': 61.5
@@ -71,19 +71,19 @@ DATA = [{
 }, {
     'seat': 'Texas State Judge, 7th District (Smith County)',
     'years': [{
-        'year': 2000,
+        'year': '2000',
         'races': [{
             'race': 'general',
             'pctWon': 'Unopposed'
         }]
     }, {
-        'year': 1996,
+        'year': '1996',
         'races': [{
             'race': 'general',
             'pctWon': 'Unopposed'
         }]
     }, {
-        'year': 1992,
+        'year': '1992',
         'races': [{
             'race': 'general',
             'pctWon': 58.5
