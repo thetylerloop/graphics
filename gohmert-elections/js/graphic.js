@@ -3,89 +3,89 @@ var pymChild = null;
 var isMobile = false;
 
 DATA = [{
-    'seat': '1st District',
+    'seat': 'House of Representatives, Texas 1st District',
     'years': [{
         'year': 2016,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 73.9
         }, {
-            'race': 'Primary',
+            'race': 'primary',
             'pctWon': 82.0
         }]
     }, {
         'year': 2014,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 77.5
         }, {
-            'race': 'Primary',
-            'pctWon': NaN
+            'race': 'primary',
+            'pctWon': 'Unopposed in primary'
         }]
     }, {
         'year': 2012,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 71.4
         }, {
-            'race': 'Primary',
-            'pctWon': NaN
+            'race': 'primary',
+            'pctWon': 'Unopposed in primary'
         }]
     }, {
         'year': 2010,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 89.7
         }, {
-            'race': 'Primary',
-            'pctWon': NaN
+            'race': 'primary',
+            'pctWon': 'Unopposed in primary'
         }]
     }, {
         'year': 2008,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 87.6
         }, {
-            'race': 'Primary',
-            'pctWon': NaN
+            'race': 'primary',
+            'pctWon': 'Unopposed in primary'
         }]
     }, {
         'year': 2006,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 68.0
         }, {
-            'race': 'Primary',
-            'pctWon': NaN
+            'race': 'primary',
+            'pctWon': 'Unopposed in primary'
         }]
     }, {
         'year': 2004,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 61.5
         }, {
-            'race': 'Primary',
+            'race': 'primary',
             'pctWon': 41.7
         }]
     }]
 }, {
-    'seat': '7th District Judge',
+    'seat': 'Texas State Judge, 7th District (Smith County)',
     'years': [{
         'year': 2000,
         'races': [{
-            'race': 'TKTK',
-            'pctWon': NaN
+            'race': 'general',
+            'pctWon': 'Unopposed'
         }]
     }, {
         'year': 1996,
         'races': [{
-            'race': 'TKTK',
-            'pctWon': NaN
+            'race': 'general',
+            'pctWon': 'Unopposed'
         }]
     }, {
         'year': 1992,
         'races': [{
-            'race': 'TKTK',
+            'race': 'general',
             'pctWon': 58.5
         }]
     }]
@@ -149,17 +149,18 @@ var renderBarChart = function(config) {
     var barHeight = 30;
     var barGap = 5;
 
+    var seatGap = 20;
+
     var yearWidth = 45;
     var yearGap = 5;
 
-    var raceWidth = 140;
-    var raceGap = 5;
+    var yearGapY = 10;
 
     var valueGap = 6;
 
     var margins = {
         top: 0,
-        right: 15,
+        right: 30,
         bottom: 30,
         left: 10
     };
@@ -169,13 +170,32 @@ var renderBarChart = function(config) {
 
     // Calculate actual chart dimensions
     var chartWidth = config['width'] - margins['left'] - margins['right'];
-    var chartHeight = ((barHeight + barGap) * 19);
+    var chartHeight = ((barHeight + barGap) * 19) + seatGap + (yearGapY * 8);
 
-    var plotWidth = chartWidth - (yearWidth + yearGap + raceWidth + raceGap);
+    var plotWidth = chartWidth - (yearWidth + yearGap);
 
     // Clear existing graphic (for redraw)
     var containerElement = d3.select(config['container']);
     containerElement.html('');
+
+    /*
+     * Render the HTML legend.
+     */
+    var legend = containerElement.append('ul')
+        .attr('class', 'key')
+        .selectAll('g')
+        .data(['General', 'Primary'])
+        .enter().append('li')
+            .attr('class', function(d) {
+                return 'key-item ' + classify(d);
+            });
+
+    legend.append('b')
+
+    legend.append('label')
+        .text(function(d) {
+            return d;
+        });
 
     /*
      * Create the root SVG element.
@@ -190,7 +210,7 @@ var renderBarChart = function(config) {
         .attr('transform', makeTranslate(margins['left'], margins['top']));
 
     var plotElement = chartElement.append('g')
-        .attr('transform', makeTranslate(yearWidth + yearGap + raceWidth + raceGap, 0))
+        .attr('transform', makeTranslate(yearWidth + yearGap, 0))
 
     /*
      * Create D3 scale objects.
@@ -233,22 +253,26 @@ var renderBarChart = function(config) {
             .tickFormat('')
         );
 
-    var totalRaces = 0;
+    var yOffset = 0;
 
-    _.each(DATA, function(seatData) {
+    _.each(DATA, function(seatData, k) {
         var seat = seatData['seat'];
         var years = seatData['years'];
 
         var seatElement = chartElement.append('g')
             .attr('class', 'seat');
 
+        if (k > 0) {
+            yOffset += seatGap;
+        }
+
         seatElement.append('text')
             .attr('class', 'seat-label')
-            .attr('y', totalRaces * (barHeight + barGap))
+            .attr('y', yOffset)
             .attr('dy', (barHeight / 2) + 3)
             .text(seat);
 
-        totalRaces += 1;
+        yOffset += barHeight + barGap;
 
         _.each(years, function(yearData, i) {
             var year = yearData['year'];
@@ -263,7 +287,7 @@ var renderBarChart = function(config) {
 
                 var raceElement = yearElement.append('g')
                     .attr('class', 'race')
-                    .attr('transform', makeTranslate(0, totalRaces * (barHeight + barGap)))
+                    .attr('transform', makeTranslate(0, yOffset))
 
                 if (j == 0) {
                     raceElement.append('text')
@@ -272,34 +296,32 @@ var renderBarChart = function(config) {
                         .text(year);
                 }
 
-                raceElement.append('text')
-                    .attr('class', 'race-label')
-                    .attr('x', yearWidth + yearGap)
-                    .attr('dy', (barHeight / 2) + 3)
-                    .text(race);
-
-                if (_.isNaN(pctWon)) {
+                if (isNaN(pctWon)) {
                     raceElement.append('text')
                         .attr('class', 'unopposed-label')
-                        .attr('x', yearWidth + yearGap + raceWidth + raceGap)
+                        .attr('x', yearWidth + yearGap)
                         .attr('dy', (barHeight / 2) + 3)
-                        .text('Unopposed')
+                        .text(pctWon)
                 } else {
                     plotElement.append('rect')
-                        .attr('class', 'pct-won')
+                        .attr('class', 'pct-won ' + race)
                         .attr('x', 0)
                         .attr('width', xScale(pctWon))
-                        .attr('y', totalRaces * (barHeight + barGap))
+                        .attr('y', yOffset)
                         .attr('height', barHeight);
 
                     raceElement.append('text')
                         .attr('class', 'value-label')
-                        .attr('x', yearWidth + yearGap + raceWidth + raceGap + valueGap + xScale(pctWon))
+                        .attr('x', yearWidth + yearGap + valueGap + xScale(pctWon))
                         .attr('dy', (barHeight / 2) + 3)
                         .text(pctWon + '%');
                 }
 
-                totalRaces += 1;
+                yOffset += barHeight + barGap;
+
+                if (j == 1) {
+                    yOffset += yearGapY;
+                }
             });
 
             yearElement.selectAll('g')

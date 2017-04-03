@@ -1,19 +1,61 @@
 @import "base";
 
-// Add custom styles here
+.key {
+    margin-bottom: 20px;
+
+    li {
+        &.general b {
+            background-color: @blue3;
+        }
+
+        &.primary b {
+            background-color: @blue4;
+        }
+    }
+}
+
 rect {
-    fill: @blue3;
+    &.general {
+        fill: @blue3;
+    }
+
+    &.primary {
+        fill: @blue4;
+    }
+}
+
+.seat-label {
+    font-weight: bold;
 }
 
 .year-label {
-    fill: #999;
+    fill: #777;
 }
 
 .unopposed-label {
     font-style: italic;
-    fill: #999;
+    font-size: 14px;
+    fill: #777;
 }
 
 .value-label {
-    fill: #999;
+    fill: #777;
+}
+
+@media screen and (max-width: 639px) {
+    .seat-label {
+        font-size: 14px;
+    }
+
+    .year-label {
+        font-size: 14px;
+    }
+
+    .unopposed-label {
+        font-size: 12px;
+    }
+
+    .value-label {
+        font-size: 14px;
+    }
 }
