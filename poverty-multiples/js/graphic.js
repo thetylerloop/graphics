@@ -277,13 +277,9 @@ var renderStackedColumnChart = function(config) {
                 var textHeight = d3.select(this).node().getBBox().height;
                 var barHeight = Math.abs(yScale(d['y0']) - yScale(d['y1']));
 
-                // if (textHeight + valueGap * 2 > barHeight) {
-                //     d3.select(this).classed('hidden', true);
-                // }
-
                 var barCenter = yScale(d['y1']) + ((yScale(d['y0']) - yScale(d['y1'])) / 2);
 
-                return barCenter + textHeight / 2;
+                return barCenter + textHeight / 2 - 2;
             })
             .attr('text-anchor', 'middle');
 }
