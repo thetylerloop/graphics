@@ -134,7 +134,7 @@ var renderLineChart = function(config) {
 
     var colorScale = d3.scale.ordinal()
         .domain(_.pluck(config['data'], 'name'))
-        .range([COLORS['red3'], COLORS['yellow3'], COLORS['blue3'], COLORS['orange3'], COLORS['teal3']]);
+        .range([COLORS['blue3'], COLORS['teal6'], COLORS['teal4'], COLORS['teal2']]);
 
     /*
      * Render the HTML legend.
