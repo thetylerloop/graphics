@@ -272,6 +272,19 @@ var renderLineChart = function(config) {
 
             return line(p);
         })
+
+    chartElement.append('text')
+        .attr('class', 'annotation')
+        .attr('x', xScale(new Date(2017, 0, 1)))
+        .attr('y', yScale(1.65))
+        .text('Proposed increase')
+
+    chartElement.append('line')
+        .attr('class', 'pointer')
+        .attr('x1', xScale(new Date(2016, 0, 1)))
+        .attr('y1', yScale(1.6))
+        .attr('x2', xScale(new Date(2016, 6, 1)))
+        .attr('y2', yScale(1.425));
 }
 
 /*

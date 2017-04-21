@@ -12,11 +12,30 @@
     stroke-dasharray: 5, 5;
 }
 
-// @media screen and (max-width: 500px) {
-//     .value text {
-//         font-size: 10px;
-//     }
-// }
+.annotation {
+    font-size: 14px;
+    fill: #999;
+    stroke: none;
+    text-anchor: end;
+}
+
+.pointer {
+    stroke-width: 1.5px;
+    stroke: #999;
+    fill: none;
+    shape-rendering: auto;
+}
+
+@media screen and (max-width: 500px) {
+    .lines {
+        stroke-width: 2px;
+    }
+
+    .projection {
+        stroke-width: 2px;
+        stroke-dasharray: 2.5, 2.5;
+    }
+}
 //
 // @media screen and (min-width: 500px) {
 //     .key {
