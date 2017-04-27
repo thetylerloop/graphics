@@ -227,7 +227,7 @@ var renderColumnChart = function(config) {
         .enter()
         .append('text')
             .text(function(d) {
-                return d[valueColumn].toFixed(0);
+                return fmtComma(d[valueColumn]);
             })
             .attr('x', function(d, i) {
                 return xScale(d[labelColumn]) + (xScale.rangeBand() / 2);
