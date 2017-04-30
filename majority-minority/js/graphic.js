@@ -94,7 +94,7 @@ var renderStackedBarChart = function(config) {
 
     var barHeight = 30;
     var barGap = 5;
-    var labelWidth = 80;
+    var labelWidth = 85;
     var labelMargin = 6;
     var valueGap = 6;
 
@@ -251,7 +251,7 @@ var renderStackedBarChart = function(config) {
         .enter().append('text')
             .text(function(d) {
                 if (d['val'] != 0) {
-                    return d['val'] + '%';
+                    return d['val'].toFixed(1) + '%';
                 }
             })
             .attr('class', function(d) {
