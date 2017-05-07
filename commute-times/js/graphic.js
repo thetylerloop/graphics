@@ -104,8 +104,8 @@ var renderLineChart = function(config) {
     var aspectHeight = isMobile ? 3 : 9;
 
     var margins = {
-        top: 10,
-        right: 20,
+        top: 5,
+        right: 35,
         bottom: 20,
         left: 30
     };
@@ -159,7 +159,29 @@ var renderLineChart = function(config) {
 
     var colorScale = d3.scale.ordinal()
         .domain(_.pluck(config['data'], 'name'))
-        .range([COLORS['blue3'], COLORS['yellow3'], COLORS['blue3'], COLORS['orange3'], COLORS['teal3']]);
+        .range([COLORS['red3'], COLORS['yellow3'], COLORS['blue3'], COLORS['orange3'], COLORS['teal3']]);
+
+    /*
+     * Render the HTML legend.
+     */
+    var legend = containerElement.append('ul')
+        .attr('class', 'key')
+        .selectAll('g')
+        .data(config['data'])
+        .enter().append('li')
+            .attr('class', function(d, i) {
+                return 'key-item ' + classify(d['name']);
+            });
+
+    legend.append('b')
+        .style('background-color', function(d) {
+            return colorScale(d['name']);
+        });
+
+    legend.append('label')
+        .text(function(d) {
+            return d['name'];
+        });
 
     /*
      * Create the root SVG element.
@@ -257,6 +279,39 @@ var renderLineChart = function(config) {
             })
             .attr('d', function(d) {
                 return line(d['values']);
+            });
+
+    chartElement.append('g')
+        .attr('class', 'value')
+        .selectAll('text')
+        .data(config['data'])
+        .enter().append('text')
+            .attr('x', function(d, i) {
+                var last = d['values'][d['values'].length - 1];
+
+                return xScale(last[dateColumn]) + 5;
+            })
+            .attr('y', function(d) {
+                var last = d['values'][d['values'].length - 1];
+
+                return yScale(last[valueColumn]) + 3;
+            })
+            .attr('dy', function(d) {
+                if (d['name'] == 'McLennan County') {
+                    return -6;
+                } else if (d['name'] == 'Lubbock County') {
+                    return 10;
+                }
+
+                return 0;
+            })
+            .text(function(d) {
+                var last = d['values'][d['values'].length - 1];
+                var value = last[valueColumn];
+
+                var label = last[valueColumn].toFixed(1);
+
+                return label;
             });
 }
 
