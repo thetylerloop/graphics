@@ -91,18 +91,18 @@ var renderGroupedBarChart = function(config) {
     var barGapInner = 2;
     var barGap = 10;
     var groupHeight =  (barHeight * numGroupBars) + (barGapInner * (numGroupBars - 1))
-    var labelWidth = 105;
+    var labelWidth = 95;
     var labelMargin = 6;
     var valueGap = 6;
 
     var margins = {
         top: 0,
-        right: 15,
+        right: 20,
         bottom: 20,
         left: (labelWidth + labelMargin)
     };
 
-    var ticksX = 7;
+    var ticksX = 5;
     var roundTicksFactor = 5;
 
     // Calculate actual chart dimensions
