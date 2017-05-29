@@ -12,20 +12,30 @@ var AREA_PLUS = {
 
 var ANNOTATIONS = {
     '1950': [{
+        'x': -95.21,
+        'y': 32.37,
+        'text': 'Old Tyler',
+        'anchor': 'middle',
+        'line': [
+            [-95.21, 32.365],
+            [-95.23, 32.348],
+            [-95.27, 32.348]
+        ]
+    }],
+    '1960': [{
         'x': -95.42,
         'y': 32.267,
-        'text': 'Old Tyler',
+        'text': 'Woldert Park',
         'anchor': 'middle',
         'line': [
             [-95.42, 32.28],
             [-95.40, 32.30],
             [-95.374, 32.317]
         ]
-    }],
-    '1960': [{
+    }, {
         'x': -95.42,
         'y': 32.267,
-        'text': 'TKTK',
+        'text': 'Green Acres',
         'anchor': 'middle',
         'line': [
             [-95.42, 32.28],
