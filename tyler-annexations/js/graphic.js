@@ -1,21 +1,23 @@
 var YEARS = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
-var AREA_PLUS = {
-    1950: 2.0,
-    1960: 6.2,
-    1970: 4.4,
-    1980: 11.9,
-    1990: 5.2,
-    2000: 9.9,
-    2010: 4.7,
-    2020: 3.1
+var AREA = {
+    1950: 12.1,
+    1960: 18.4,
+    1970: 22.7,
+    1980: 34.6,
+    1990: 39.8,
+    2000: 49.7,
+    2010: 54.4,
+    2020: 57.5
 };
+
+FRONT_AND_BROADWAY = [-95.300664, 32.346635]
 
 var ANNOTATIONS = {
     '1950': [{
-        'x': -95.37,
-        'y': 32.37,
-        'text': 'Tyler c. 1888',
-        'anchor': 'end',
+        'x': -95.395,
+        'y': 32.385,
+        'text': '<tspan>Front &</tspan><tspan dx="-50" dy="16">Broadway</tspan>',
+        'anchor': 'middle',
         'line': [
             [-95.36, 32.375],
             [-95.34, 32.375],
@@ -75,13 +77,33 @@ var ANNOTATIONS = {
     }],
     '1970': [{
         'x': -95.41,
-        'y': 32.32,
+        'y': 32.3,
         'text': 'John Tyler HS',
         'anchor': 'middle',
         'line': [
-            [-95.41, 32.335],
+            [-95.41, 32.315],
             [-95.39, 32.35],
             [-95.355, 32.362]
+        ]
+    }, {
+        'x': -95.41,
+        'y': 32.37,
+        'text': 'Hwy 69',
+        'anchor': 'middle',
+        'line': [
+            [-95.41, 32.38],
+            [-95.39, 32.40],
+            [-95.355, 32.41]
+        ]
+    }, {
+        'x': -95.21,
+        'y': 32.37,
+        'text': 'Hwy 271',
+        'anchor': 'middle',
+        'line': [
+            [-95.21, 32.38],
+            [-95.21, 32.40],
+            [-95.23, 32.41]
         ]
     }],
     '1980': [{
@@ -299,6 +321,15 @@ var renderLocatorMap = function(config) {
             })
             .attr('d', path);
 
+    // Center marker
+    var marker = chartElement.append('g')
+        .attr('class', 'marker')
+
+    marker.append('circle')
+        .attr('cx', projection([-95.294280, 32.348738])[0])
+        .attr('cy', projection([-95.294280, 32.346644])[1])
+        .attr('r', 2)
+
     // Arrows!
     chartElement.append('defs')
          .append('marker')
@@ -336,7 +367,7 @@ var renderLocatorMap = function(config) {
             .attr('x', projection([ann['x'], ann['y']])[0])
             .attr('y', projection([ann['x'], ann['y']])[1])
             .attr('text-anchor', ann['anchor'])
-            .text(ann['text']);
+            .html(ann['text']);
     })
 
 
@@ -351,14 +382,12 @@ var renderLocatorMap = function(config) {
       .attr('text-anchor', 'middle')
       .text((config['year'] - 10).toString() + "s");
 
-  if (AREA_PLUS[config['year']] != null) {
-      labels.append('text')
-          .attr('class', 'area')
-          .attr('x', mapWidth / 2)
-          .attr('y', 75)
-          .attr('text-anchor', 'middle')
-          .text('+' + AREA_PLUS[config['year']] + ' sq. mi.');
-  }
+  labels.append('text')
+      .attr('class', 'area')
+      .attr('x', mapWidth / 2)
+      .attr('y', 75)
+      .attr('text-anchor', 'middle')
+      .text(AREA[config['year']].toFixed(0) + ' sq. mi.');
 }
 
 /*
