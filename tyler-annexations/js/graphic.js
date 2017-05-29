@@ -12,57 +12,87 @@ var AREA_PLUS = {
 
 var ANNOTATIONS = {
     '1950': [{
+        'x': -95.37,
+        'y': 32.37,
+        'text': 'Tyler c. 1888',
+        'anchor': 'end',
+        'line': [
+            [-95.36, 32.375],
+            [-95.34, 32.375],
+            [-95.3, 32.35]
+        ]
+    }, {
         'x': -95.21,
         'y': 32.37,
-        'text': 'Old Tyler',
+        'text': 'Pre-1940 area',
         'anchor': 'middle',
         'line': [
             [-95.21, 32.365],
             [-95.23, 32.348],
             [-95.27, 32.348]
         ]
-    }],
-    '1960': [{
-        'x': -95.42,
-        'y': 32.267,
-        'text': 'Woldert Park',
+    }, {
+        'x': -95.24,
+        'y': 32.28,
+        'text': '1940s additions',
         'anchor': 'middle',
         'line': [
-            [-95.42, 32.28],
-            [-95.40, 32.30],
-            [-95.374, 32.317]
+            [-95.24, 32.295],
+            [-95.26, 32.32],
+            [-95.282, 32.32]
+        ]
+    }],
+    '1960': [{
+        'x': -95.24,
+        'y': 32.4,
+        'text': 'Woldert Park',
+        'anchor': 'left',
+        'line': [
+            [-95.245, 32.403],
+            [-95.29, 32.39],
+            [-95.3, 32.383]
         ]
     }, {
-        'x': -95.42,
+        'x': -95.235,
         'y': 32.267,
         'text': 'Green Acres',
         'anchor': 'middle',
         'line': [
-            [-95.42, 32.28],
-            [-95.40, 32.30],
-            [-95.374, 32.317]
+            [-95.235, 32.28],
+            [-95.235, 32.30],
+            [-95.255, 32.312]
+        ]
+    }, {
+        'x': -95.35,
+        'y': 32.28,
+        'text': 'Robert E. Lee HS',
+        'anchor': 'end',
+        'line': [
+            [-95.345, 32.285],
+            [-95.33, 32.285],
+            [-95.305, 32.297]
         ]
     }],
     '1970': [{
-        'x': -95.42,
-        'y': 32.267,
-        'text': 'TKTK',
+        'x': -95.41,
+        'y': 32.32,
+        'text': 'John Tyler HS',
         'anchor': 'middle',
         'line': [
-            [-95.42, 32.28],
-            [-95.40, 32.30],
-            [-95.374, 32.317]
+            [-95.41, 32.335],
+            [-95.39, 32.35],
+            [-95.355, 32.362]
         ]
     }],
     '1980': [{
-        'x': -95.42,
-        'y': 32.267,
-        'text': 'UT Tyler (Texas State College)',
+        'x': -95.215,
+        'y': 32.26,
+        'text': 'UT Tyler',
         'anchor': 'middle',
         'line': [
-            [-95.42, 32.28],
-            [-95.40, 32.30],
-            [-95.374, 32.317]
+            [-95.215, 32.275],
+            [-95.215, 32.29],
+            [-95.235, 32.305]
         ]
     }],
     '1990': [{
@@ -247,7 +277,7 @@ var renderLocatorMap = function(config) {
         .append('g')
 
     /*
-     * Render countries.
+     * Render areas.
      */
     chartElement.append('g')
         .attr('class', 'areas')
@@ -255,13 +285,17 @@ var renderLocatorMap = function(config) {
             .data(config['data']['features'])
         .enter().append('path')
             .attr('class', function(d) {
+                var cls = 'year-' + d['properties']['YEAR'];
+
                 if (d['properties']['YEAR'] >= config['year']) {
-                    return 'hide';
+                    cls += ' hide';
                 } else if (d['properties']['YEAR'] >= config['year'] - 10) {
-                    return 'new';
+                    cls += ' new';
                 } else {
-                    return 'old';
+                    cls += ' old';
                 }
+
+                return cls;
             })
             .attr('d', path);
 
@@ -278,7 +312,7 @@ var renderLocatorMap = function(config) {
          .attr('refX','5')
          .append('polygon')
          .attr('points','0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999')
-         .attr('fill','#999')
+         .attr('fill','#aaa')
 
     var arrowLine = d3.svg.line()
         .interpolate('basis')
@@ -315,7 +349,7 @@ var renderLocatorMap = function(config) {
       .attr('x', mapWidth / 2)
       .attr('y', 55)
       .attr('text-anchor', 'middle')
-      .text((config['year'] - 10).toString() + "'s");
+      .text((config['year'] - 10).toString() + "s");
 
   if (AREA_PLUS[config['year']] != null) {
       labels.append('text')
