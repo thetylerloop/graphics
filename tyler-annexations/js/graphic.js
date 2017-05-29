@@ -1,6 +1,27 @@
 var YEARS = [1950, 1960, 1970, 1980, 1990, 2000, 2010, 2020];
+var AREA_PLUS = {
+    1950: 2.0,
+    1960: 6.2,
+    1970: 4.4,
+    1980: 11.9,
+    1990: 5.2,
+    2000: 9.9,
+    2010: 4.7,
+    2020: 3.1
+};
 
 var ANNOTATIONS = {
+    '2010': [{
+        'x': -95.42,
+        'y': 32.267,
+        'text': 'The Cascades',
+        'anchor': 'middle',
+        'line': [
+            [-95.42, 32.28],
+            [-95.40, 32.30],
+            [-95.374, 32.317]
+        ]
+    }],
     '2020': [{
         'x': -95.42,
         'y': 32.405,
@@ -19,7 +40,7 @@ var ANNOTATIONS = {
         'line': [
             [-95.2, 32.39],
             [-95.2, 32.4],
-            [-95.215, 32.415]
+            [-95.21, 32.417]
         ]
     }]
 }
@@ -214,11 +235,20 @@ var renderLocatorMap = function(config) {
       .attr('class', 'labels');
 
   labels.append('text')
+      .attr('class', 'year')
       .attr('x', mapWidth / 2)
-      .attr('y', 60)
+      .attr('y', 55)
       .attr('text-anchor', 'middle')
       .text((config['year'] - 10).toString() + "'s");
 
+  if (AREA_PLUS[config['year']] != null) {
+      labels.append('text')
+          .attr('class', 'area')
+          .attr('x', mapWidth / 2)
+          .attr('y', 75)
+          .attr('text-anchor', 'middle')
+          .text('+' + AREA_PLUS[config['year']] + ' sq. mi.');
+  }
 }
 
 /*
