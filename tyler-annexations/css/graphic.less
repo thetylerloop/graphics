@@ -1,0 +1,62 @@
+@import "base";
+
+svg {
+    background-color: #fff;
+}
+
+#grid {
+    .map {
+        float: left;
+        width: 50%;
+    }
+
+    &:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}
+
+.areas path {
+    fill: #a6cee3;
+    stroke: #a6cee3;
+    stroke-width: 1px;
+
+    &.hide {
+        display: none;
+    }
+
+    &.new {
+        fill: #b2df8a;
+        stroke: #b2df8a;
+    }
+}
+
+.annotations {
+    .arrow {
+        stroke-width: 1.5px;
+        stroke: #999;
+        fill: none;
+    }
+
+    text {
+        font-size: 14px;
+        fill: #999;
+    }
+}
+
+.labels text {
+    font-size: 16px;
+    fill: #666;
+    font-weight: bold;
+}
+
+// responsive styles
+@media screen and (max-width: 500px) {
+    #grid {
+        .map {
+            float: none;
+            width: 100%;
+        }
+    }
+}
