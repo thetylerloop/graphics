@@ -164,34 +164,30 @@ var renderGroupedStackedColumnChart = function(config) {
         .rangeRound([chartHeight, 0]);
 
     var colorScale = d3.scale.ordinal()
-        .domain(d3.keys(config['data'][0]).filter(function(d) {
-            if (!_.contains(skipLabels, d)) {
-                return d;
-            }
-        }))
-        .range([ COLORS['teal3'], COLORS['teal5'] ]);
+        .domain([ 'Women', 'Men' ])
+        .range([ COLORS['teal5'], COLORS['teal3'] ]);
 
     /*
      * Render the legend.
      */
-    // var legend = containerElement.append('ul')
-	// 	.attr('class', 'key')
-	// 	.selectAll('g')
-	// 		.data(colorScale.domain())
-	// 	.enter().append('li')
-	// 		.attr('class', function(d, i) {
-	// 			return 'key-item key-' + i + ' ' + classify(d);
-	// 		});
-    //
-    // legend.append('b')
-    //     .style('background-color', function(d) {
-    //         return colorScale(d);
-    //     });
-    //
-    // legend.append('label')
-    //     .text(function(d) {
-    //         return d;
-    //     });
+    var legend = containerElement.append('ul')
+		.attr('class', 'key')
+		.selectAll('g')
+			.data(colorScale.domain())
+		.enter().append('li')
+			.attr('class', function(d, i) {
+				return 'key-item key-' + i + ' ' + classify(d);
+			});
+
+    legend.append('b')
+        .style('background-color', function(d) {
+            return colorScale(d);
+        });
+
+    legend.append('label')
+        .text(function(d) {
+            return d;
+        });
 
     /*
      * Create the root SVG element.
