@@ -86,25 +86,25 @@ var ANNOTATIONS = {
             [-95.355, 32.362]
         ]
     }, {
-        'x': -95.41,
-        'y': 32.37,
+        'x': -95.38,
+        'y': 32.395,
         'text': 'Hwy 69',
         'anchor': 'middle',
-        'line': [
-            [-95.41, 32.38],
-            [-95.39, 32.40],
-            [-95.355, 32.41]
-        ]
+        // 'line': [
+        //     [-95.41, 32.38],
+        //     [-95.39, 32.40],
+        //     [-95.355, 32.41]
+        // ]
     }, {
         'x': -95.21,
-        'y': 32.37,
+        'y': 32.395,
         'text': 'Hwy 271',
         'anchor': 'middle',
-        'line': [
-            [-95.21, 32.38],
-            [-95.21, 32.40],
-            [-95.23, 32.41]
-        ]
+        // 'line': [
+        //     [-95.21, 32.38],
+        //     [-95.21, 32.40],
+        //     [-95.23, 32.41]
+        // ]
     }],
     '1980': [{
         'x': -95.215,
@@ -116,8 +116,18 @@ var ANNOTATIONS = {
             [-95.215, 32.29],
             [-95.235, 32.305]
         ]
+    }, {
+        'x': -95.315,
+        'y': 32.245,
+        'text': 'South Broadway',
+        'anchor': 'end',
+        // 'line': [
+        //     [-95.355, 32.254],
+        //     // [-95.39, 32.35],
+        //     [-95.315, 32.254]
+        // ]
     }],
-    '1990': [{
+    '1990': [/*{
         'x': -95.42,
         'y': 32.267,
         'text': 'TKTK',
@@ -127,8 +137,8 @@ var ANNOTATIONS = {
             [-95.40, 32.30],
             [-95.374, 32.317]
         ]
-    }],
-    '2000': [{
+    }*/],
+    '2000': [/*{
         'x': -95.42,
         'y': 32.267,
         'text': 'TKTK',
@@ -138,7 +148,7 @@ var ANNOTATIONS = {
             [-95.40, 32.30],
             [-95.374, 32.317]
         ]
-    }],
+    }*/],
     '2010': [{
         'x': -95.42,
         'y': 32.267,
@@ -358,10 +368,12 @@ var renderLocatorMap = function(config) {
         .attr('class', 'annotations');
 
     _.each(ANNOTATIONS[config['year']], function(ann) {
-        annotations.append('path')
-            .attr('class', 'arrow')
-            .attr('d', arrowLine(ann['line']))
-            .style('marker-end', 'url(#arrowhead)');
+        if (ann['line']) {
+            annotations.append('path')
+                .attr('class', 'arrow')
+                .attr('d', arrowLine(ann['line']))
+                .style('marker-end', 'url(#arrowhead)');
+        }
 
         annotations.append('text')
             .attr('x', projection([ann['x'], ann['y']])[0])
