@@ -10,7 +10,7 @@ var AREA = {
     2020: 57.5
 };
 
-FRONT_AND_BROADWAY = [-95.300664, 32.346635]
+FRONT_AND_BROADWAY = [-95.300664, 32.346563];
 
 var ANNOTATIONS = {
     '1950': [{
@@ -21,7 +21,7 @@ var ANNOTATIONS = {
         'line': [
             [-95.36, 32.375],
             [-95.34, 32.375],
-            [-95.3, 32.35]
+            [-95.305, 32.35]
         ]
     }, {
         'x': -95.21,
@@ -89,22 +89,22 @@ var ANNOTATIONS = {
         'x': -95.38,
         'y': 32.395,
         'text': 'Hwy 69',
-        'anchor': 'middle',
-        // 'line': [
-        //     [-95.41, 32.38],
-        //     [-95.39, 32.40],
-        //     [-95.355, 32.41]
-        // ]
+        'anchor': 'end',
+        'line': [
+            [-95.375, 32.398],
+            [-95.36, 32.398],
+            [-95.35, 32.4]
+        ]
     }, {
-        'x': -95.21,
+        'x': -95.2,
         'y': 32.395,
         'text': 'Hwy 271',
-        'anchor': 'middle',
-        // 'line': [
-        //     [-95.21, 32.38],
-        //     [-95.21, 32.40],
-        //     [-95.23, 32.41]
-        // ]
+        'anchor': 'start',
+        'line': [
+            [-95.205, 32.398],
+            [-95.22, 32.398],
+            [-95.23, 32.41]
+        ]
     }],
     '1980': [{
         'x': -95.215,
@@ -117,31 +117,31 @@ var ANNOTATIONS = {
             [-95.235, 32.305]
         ]
     }, {
-        'x': -95.315,
-        'y': 32.245,
+        'x': -95.4,
+        'y': 32.28,
         'text': 'South Broadway',
-        'anchor': 'end',
-        // 'line': [
-        //     [-95.355, 32.254],
-        //     // [-95.39, 32.35],
-        //     [-95.315, 32.254]
-        // ]
-    }],
-    '1990': [/*{
-        'x': -95.42,
-        'y': 32.267,
-        'text': 'TKTK',
         'anchor': 'middle',
         'line': [
-            [-95.42, 32.28],
-            [-95.40, 32.30],
-            [-95.374, 32.317]
+            [-95.4, 32.275],
+            [-95.4, 32.26],
+            [-95.315, 32.255]
         ]
-    }*/],
+    }],
+    '1990': [{
+        'x': -95.23,
+        'y': 32.24,
+        'text': 'Trane',
+        'anchor': 'middle',
+        'line': [
+            [-95.23, 32.25],
+            [-95.23, 32.27],
+            [-95.242, 32.281]
+        ]
+    }],
     '2000': [/*{
-        'x': -95.42,
-        'y': 32.267,
-        'text': 'TKTK',
+        'x': -95.21,
+        'y': 32.225 ,
+        'text': 'Single-family homes',
         'anchor': 'middle',
         'line': [
             [-95.42, 32.28],
@@ -336,8 +336,8 @@ var renderLocatorMap = function(config) {
         .attr('class', 'marker')
 
     marker.append('circle')
-        .attr('cx', projection([-95.294280, 32.348738])[0])
-        .attr('cy', projection([-95.294280, 32.346644])[1])
+        .attr('cx', projection(FRONT_AND_BROADWAY)[0])
+        .attr('cy', projection(FRONT_AND_BROADWAY)[1])
         .attr('r', 2)
 
     // Arrows!
@@ -381,8 +381,6 @@ var renderLocatorMap = function(config) {
             .attr('text-anchor', ann['anchor'])
             .html(ann['text']);
     })
-
-
 
   var labels = chartElement.append('g')
       .attr('class', 'labels');
