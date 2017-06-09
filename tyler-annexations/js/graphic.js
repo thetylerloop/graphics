@@ -397,7 +397,15 @@ var renderLocatorMap = function(config) {
       .attr('x', mapWidth / 2)
       .attr('y', 75)
       .attr('text-anchor', 'middle')
-      .text(AREA[config['year']].toFixed(0) + ' sq. mi.');
+      .text(function(d) {
+          var label = 'sq. mi.'
+
+          if (config['year'] == 1950) {
+              label = 'square miles'
+          }
+
+          return AREA[config['year']].toFixed(0) + ' ' + label;
+      });
 }
 
 /*
