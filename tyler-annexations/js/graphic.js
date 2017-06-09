@@ -163,7 +163,7 @@ var ANNOTATIONS = {
     '2020': [{
         'x': -95.42,
         'y': 32.405,
-        'text': 'The Airport',
+        'text': 'The airport',
         'anchor': 'middle',
         'line': [
             [-95.42, 32.4],
@@ -398,7 +398,7 @@ var renderLocatorMap = function(config) {
       .attr('y', 75)
       .attr('text-anchor', 'middle')
       .text(function(d) {
-          var label = 'sq. mi.'
+          var label = 'sq mi';
 
           if (config['year'] == 1950) {
               label = 'square miles'
