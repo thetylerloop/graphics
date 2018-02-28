@@ -104,14 +104,14 @@ var renderLineChart = function(config) {
     var aspectHeight = isMobile ? 3 : 9;
 
     var margins = {
-        top: 5,
+        top: 10,
         right: 120,
         bottom: 20,
         left: 40
     };
 
     var ticksX = 10;
-    var ticksY = 10;
+    var ticksY = 5;
     var roundTicksFactor = 5;
 
     // Mobile
@@ -139,7 +139,7 @@ var renderLineChart = function(config) {
         .range([ 0, chartWidth ])
 
     var yScale = d3.scale.linear()
-        .domain([1.25, 1.75])
+        .domain([1.3, 1.7])
         .range([chartHeight, 0]);
 
     var colorScale = d3.scale.ordinal()
