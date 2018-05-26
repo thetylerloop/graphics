@@ -101,7 +101,7 @@ var renderLocatorMap = function(config) {
     var aspectHeight = 1;
 
     var bbox = config['data']['bbox'];
-    var defaultScale = 3000000;
+    var defaultScale = 3500000;
 
     // Calculate actual map dimensions
     var mapWidth = config['width'];
@@ -201,9 +201,19 @@ var renderLocatorMap = function(config) {
      * Roads
      */
     chartElement.append('g')
-        .attr('class', 'centerline')
+        .attr('class', 'osm_streets')
         .selectAll('path')
-            .data(mapData['centerline']['features'])
+            .data(mapData['osm_streets']['features'])
+        .enter().append('path')
+            .attr('class', function(d) {
+                return "type-" + d['properties']['highway'];
+            })
+            .attr('d', path);
+
+    chartElement.append('g')
+        .attr('class', 'railroads')
+        .selectAll('path')
+            .data(mapData['railroads']['features'])
         .enter().append('path')
             .attr('d', path);
 
