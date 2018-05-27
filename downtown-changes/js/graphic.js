@@ -25,11 +25,16 @@ var COUNTRY_LABEL_ADJUSTMENTS = {
 var pymChild = null;
 var isMobile = false;
 var geoData = null;
+var structureLookup = {};
 
 /*
  * Initialize the graphic.
  */
 var onWindowLoaded = function() {
+    STRUCTURES.forEach(function(d){
+        structureLookup[d['account']] = d;
+    });
+
     if (Modernizr.svg) {
         loadJSON()
     } else {
@@ -165,37 +170,24 @@ var renderLocatorMap = function(config) {
         .attr('result', 'blurOut')
         .attr('stdDeviation', '.25');
 
-    // var landFilter = filters.append('filter')
-    //     .attr('id', 'landshadow');
-
-    // landFilter.append('feGaussianBlur')
-    //     .attr('in', 'SourceGraphic')
-    //     .attr('result', 'blurOut')
-    //     .attr('stdDeviation', '10');
-
-    /*
-     * Render buildings.
-     */
-    // Land shadow
-    // chartElement.append('path')
-    //     .attr('class', 'landmass')
-    //     .datum(mapData['structures'])
-    //     .attr('filter', 'url(#landshadow)')
-    //     .attr('d', path);
-
     chartElement.append('g')
-        .attr('class', 'structures')
+        .attr('class', 'parcel_structures')
         .selectAll('path')
-            .data(mapData['structures']['features'])
+            .data(mapData['parcel_structures']['features'])
         .enter().append('path')
+            .attr('class', function(d) {
+                return "account-" + d['properties']['ACCOUNT'];
+            })
+            .style('fill', function(d) {
+                var account = d['properties']['ACCOUNT'];
+
+                if (structureLookup.hasOwnProperty(account)) {
+                    return structureLookup[account]['color'];
+                }
+
+                return null;
+            })
             .attr('d', path);
-
-    // Highlight primary country
-    // var primaryCountryClass = classify(config['primaryCountry']);
-
-    // d3.select('.countries path.' + primaryCountryClass)
-    //     .moveToFront()
-    //     .classed('primary ' + primaryCountryClass, true);
 
     /*
      * Roads
