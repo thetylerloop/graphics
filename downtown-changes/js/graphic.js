@@ -197,7 +197,7 @@ var renderLocatorMap = function(config) {
                     return 'label ' + classify(d['text']);
                 })
                 .attr('transform', function(d) {
-                    return 'translate(' + projection([d['lng'], d['lat']]) + ')';
+                    return 'translate(' + projection([d['lng'], d['lat']]) + ') rotate(' + d['rotate'] + ')';
                 })
                 .attr('style', function(d) {
                     return 'text-anchor: ' + (d['anchor'] || 'start');
@@ -258,7 +258,12 @@ var renderLocatorMap = function(config) {
             .attr('style', function(d) {
                 return 'text-anchor: ' + (d['anchor'] || 'start');
             })
-            .attr('dx', -4)
+            .attr('dx', function(d) {
+                return d['nudge_x'] - 4;
+            })
+            .attr('dy', function(d) {
+                return d['nudge_y'];
+            })
             .text(function(d) {
                 return d['id'];
             });
