@@ -1,38 +1,25 @@
 // Global config
 var GEO_DATA_URL = 'assets/topo.json';
 
-var LABEL_DEFAULTS = {
-    'text-anchor': 'start',
-    'dx': '6',
-    'dy': '4'
-}
-
-var CITY_LABEL_ADJUSTMENTS = {
-    'Biratnagar': { 'dy': -3 },
-    'Birganj': { 'dy': -3 },
-    'Kathmandu': { 'text-anchor': 'end', 'dx': -4, 'dy': -4 },
-    'Nepalganj': { 'text-anchor': 'end', 'dx': -4, 'dy': 12 },
-    'Pokhara': { 'text-anchor': 'end', 'dx': -6 },
-    'Kanpur': { 'dy': 12 }
-}
-
-var COUNTRY_LABEL_ADJUSTMENTS = {
-    'Nepal': { 'text-anchor': 'end', 'dx': -50, 'dy': -20 },
-    'Bangladesh': { 'text-anchor': 'end', 'dx': -10 }
-}
-
 // Global vars
 var pymChild = null;
 var isMobile = false;
 var geoData = null;
-var structureLookup = {};
+var mapData = {};
+var structureGeoLookup = {};
+var structureLabelsLookup = {};
 
 /*
  * Initialize the graphic.
  */
 var onWindowLoaded = function() {
-    STRUCTURES.forEach(function(d){
-        structureLookup[d['account']] = d;
+    STRUCTURE_LABELS.forEach(function(d){
+        structureLabelsLookup[d['account']] = d;
+    });
+
+    MAP_LABELS.forEach(function(d) {
+        d['lat'] = parseFloat(d['lat']);
+        d['lng'] = parseFloat(d['lng']);
     });
 
     if (Modernizr.svg) {
@@ -56,6 +43,17 @@ var onWindowLoaded = function() {
 var loadJSON = function() {
     d3.json(GEO_DATA_URL, function(error, data) {
         geoData = data;
+
+        /*
+        * Extract topo data.
+        */
+        for (var key in geoData['objects']) {
+            mapData[key] = topojson.feature(geoData, geoData['objects'][key]);
+        }
+
+        mapData['parcel_structures']['features'].forEach(function(d) {
+            structureGeoLookup[d['properties']['ACCOUNT']] = d;
+        });
 
         pymChild = new pym.Child({
             renderCallback: render
@@ -122,15 +120,6 @@ var renderLocatorMap = function(config) {
     var chartElement = null;
 
     /*
-     * Extract topo data.
-     */
-    var mapData = {};
-
-    for (var key in config['data']['objects']) {
-        mapData[key] = topojson.feature(config['data'], config['data']['objects'][key]);
-    }
-
-    /*
      * Create the map projection.
      */
     var centroid = [((bbox[0] + bbox[2]) / 2), ((bbox[1] + bbox[3]) / 2)];
@@ -158,18 +147,8 @@ var renderLocatorMap = function(config) {
         .append('g')
 
     /*
-     * Create SVG filters.
+     * Buildings
      */
-    var filters = chartElement.append('filters');
-
-    var textFilter = filters.append('filter')
-        .attr('id', 'textshadow');
-
-    textFilter.append('feGaussianBlur')
-        .attr('in', 'SourceGraphic')
-        .attr('result', 'blurOut')
-        .attr('stdDeviation', '.25');
-
     chartElement.append('g')
         .attr('class', 'parcel_structures')
         .selectAll('path')
@@ -177,15 +156,6 @@ var renderLocatorMap = function(config) {
         .enter().append('path')
             .attr('class', function(d) {
                 return "account-" + d['properties']['ACCOUNT'];
-            })
-            .style('fill', function(d) {
-                var account = d['properties']['ACCOUNT'];
-
-                if (structureLookup.hasOwnProperty(account)) {
-                    return structureLookup[account]['color'];
-                }
-
-                return null;
             })
             .attr('d', path);
 
@@ -202,153 +172,96 @@ var renderLocatorMap = function(config) {
             })
             .attr('d', path);
 
-    chartElement.append('g')
-        .attr('class', 'railroads')
-        .selectAll('path')
-            .data(mapData['railroads']['features'])
-        .enter().append('path')
-            .attr('d', path);
-
-    /*
-     * Render primary cities.
-     */
     // chartElement.append('g')
-    //     .attr('class', 'cities primary')
+    //     .attr('class', 'railroads')
     //     .selectAll('path')
-    //         .data(mapData['cities']['features'])
+    //         .data(mapData['railroads']['features'])
     //     .enter().append('path')
-    //         .attr('d', path)
-    //         .attr('class', function(d) {
-    //             var c = 'place';
-
-    //             c += ' ' + classify(d['properties']['city']);
-    //             c += ' ' + classify(d['properties']['featurecla']);
-    //             c += ' scalerank-' + d['properties']['scalerank'];
-
-    //             return c;
-    //         });
+    //         .attr('d', path);
 
     /*
-     * Apply adjustments to label positioning.
+     * Render map labels.
      */
-    var positionLabel = function(adjustments, id, attribute) {
-        if (adjustments[id]) {
-            if (adjustments[id][attribute]) {
-                return adjustments[id][attribute];
-            } else {
-                return LABEL_DEFAULTS[attribute];
-            }
-        } else {
-            return LABEL_DEFAULTS[attribute];
-        }
-    }
+    var layers = [
+        'map-labels shadow',
+        'map-labels'
+    ];
 
-    /*
-     * Render country labels.
-     */
-    // chartElement.append('g')
-    //     .attr('class', 'country-labels')
-    //     .selectAll('.label')
-    //         .data(mapData['countries']['features'])
-    //     .enter().append('text')
-    //         .attr('class', function(d) {
-    //             return 'label ' + classify(d['id']);
-    //         })
-    //         .attr('transform', function(d) {
-    //             return 'translate(' + path.centroid(d) + ')';
-    //         })
-    //         .attr('text-anchor', function(d) {
-    //             return positionLabel(COUNTRY_LABEL_ADJUSTMENTS, d['id'], 'text-anchor');
-    //         })
-    //         .attr('dx', function(d) {
-    //             return positionLabel(COUNTRY_LABEL_ADJUSTMENTS, d['id'], 'dx');
-    //         })
-    //         .attr('dy', function(d) {
-    //             return positionLabel(COUNTRY_LABEL_ADJUSTMENTS, d['id'], 'dy');
-    //         })
-    //         .text(function(d) {
-    //             return COUNTRIES[d['properties']['country']] || d['properties']['country'];
-    //         });
+    layers.forEach(function(layer) {
+        chartElement.append('g')
+            .attr('class', layer)
+            .selectAll('.label')
+                .data(MAP_LABELS)
+            .enter().append('text')
+                .attr('class', function(d) {
+                    return 'label ' + classify(d['text']);
+                })
+                .attr('transform', function(d) {
+                    return 'translate(' + projection([d['lng'], d['lat']]) + ')';
+                })
+                .attr('style', function(d) {
+                    return 'text-anchor: ' + (d['anchor'] || 'start');
+                })
+                .text(function(d) {
+                    return d['text'];
+                });
+    });
 
-    // Highlight primary country
-    // var primaryCountryClass = classify(config['primaryCountry']);
+    chartElement.append('g')
+        .attr('class', 'icons')
+        .selectAll('.circle')
+            .data(STRUCTURE_LABELS)
+        .enter().append('circle')
+            .attr('transform', function(d) {
+                var point = null;
 
-    // d3.select('.country-labels text.' + primaryCountryClass)
-    //     .classed('label primary ' + primaryCountryClass, true);
+                if (d['account'] != null) {
+                    var structureGeo = structureGeoLookup[d['account']];
+                    point = path.centroid(structureGeo);
+                } else {
+                    point = projection([d['lng'], d['lat']]);
+                }
 
-    /*
-     * Render city labels.
-     */
-    // var layers = [
-    //     'city-labels shadow',
-    //     'city-labels',
-    //     'city-labels shadow primary',
-    //     'city-labels primary'
-    // ];
+                return 'translate(' + point + ')';
+            })
+            .attr('cx', function(d) {
+                return d['nudge_x'];
+            })
+            .attr('cy', function(d) {
+                return d['nudge_y'];
+            })
+            .attr('r', 12)
+            .attr('fill', function(d) {
+                return d['color'];
+            })
 
-    // layers.forEach(function(layer) {
-    //     var data = [];
+    chartElement.append('g')
+        .attr('class', 'icons')
+        .selectAll('.label')
+            .data(STRUCTURE_LABELS)
+        .enter().append('text')
+            .attr('class', function(d) {
+                return 'label ' + d['id'];
+            })
+            .attr('transform', function(d) {
+                var point = null;
 
-    //     if (layer == 'city-labels shadow' || layer == 'city-labels') {
-    //         data = mapData['neighbors']['features'];
-    //     } else {
-    //         data = mapData['cities']['features'];
-    //     }
+                if (d['account'] != null) {
+                    var structureGeo = structureGeoLookup[d['account']];
+                    point = path.centroid(structureGeo);
+                } else {
+                    point = projection([d['lng'], d['lat']]);
+                }
 
-    //     chartElement.append('g')
-    //         .attr('class', layer)
-    //         .selectAll('.label')
-    //             .data(data)
-    //         .enter().append('text')
-    //             .attr('class', function(d) {
-    //                 var c = 'label';
-
-    //                 c += ' ' + classify(d['properties']['city']);
-    //                 c += ' ' + classify(d['properties']['featurecla']);
-    //                 c += ' scalerank-' + d['properties']['scalerank'];
-
-    //                 return c;
-    //             })
-    //             .attr('transform', function(d) {
-    //                 return 'translate(' + projection(d['geometry']['coordinates']) + ')';
-    //             })
-    //             .attr('style', function(d) {
-    //                 return 'text-anchor: ' + positionLabel(CITY_LABEL_ADJUSTMENTS, d['properties']['city'], 'text-anchor');
-    //             })
-    //             .attr('dx', function(d) {
-    //                 return positionLabel(CITY_LABEL_ADJUSTMENTS, d['properties']['city'], 'dx');
-    //             })
-    //             .attr('dy', function(d) {
-    //                 return positionLabel(CITY_LABEL_ADJUSTMENTS, d['properties']['city'], 'dy');
-    //             })
-    //             .text(function(d) {
-    //                 return CITIES[d['properties']['city']] || d['properties']['city'];
-    //             });
-    // });
-
-    // d3.selectAll('.shadow')
-    //     .attr('filter', 'url(#textshadow)');
-
-    /*
-     * Render a scale bar.
-     */
-    // var scaleBarDistance = calculateOptimalScaleBarDistance(bbox, 10);
-    // var scaleBarStart = [10, mapHeight - 20];
-    // var scaleBarEnd = calculateScaleBarEndPoint(projection, scaleBarStart, scaleBarDistance);
-
-    // chartElement.append('g')
-    //     .attr('class', 'scale-bar')
-    //     .append('line')
-    //     .attr('x1', scaleBarStart[0])
-    //     .attr('y1', scaleBarStart[1])
-    //     .attr('x2', scaleBarEnd[0])
-    //     .attr('y2', scaleBarEnd[1]);
-
-    // d3.select('.scale-bar')
-    //     .append('text')
-    //     .attr('x', scaleBarEnd[0] + 5)
-    //     .attr('y', scaleBarEnd[1] + 3)
-    //     .text(scaleBarDistance + ' miles');
+                return 'translate(' + point + ')';
+            })
+            .attr('style', function(d) {
+                return 'text-anchor: ' + (d['anchor'] || 'start');
+            })
+            .attr('dx', -4)
+            .text(function(d) {
+                return d['id'];
+            });
 }
 
 /*

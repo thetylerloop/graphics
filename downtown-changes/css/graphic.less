@@ -9,16 +9,6 @@ svg {
     fill: #ddd;
     stroke: #444;
     stroke-width: 1px;
-
-    // // Parking garage
-    // &.account-150000002200007040 {
-    //     fill: #c7c;
-    // }
-
-    // // The Forum
-    // &.account-150000004502005030 {
-    //     fill: #c7c;
-    // }
 }
 
 .osm_streets path {
@@ -45,83 +35,36 @@ svg {
     stroke-width: 1px;
 }
 
-.cities path {
-    fill: #999;
-
-    &.admin-0-capital { fill: #333; }
-}
-
-.city-labels text {
-    fill: #787878;
+.map-labels text {
+    fill: #000;
     font-size: 65%;
     text-anchor: start;
     font-family: 'Gotham SSm', Helvetica, Arial,sans-serif;
     -webkit-font-smoothing: antialiased;
-
-    &.admin-0-capital {
-        fill: #555;
-        font-weight: bold;
-    }
 }
 
-.city-labels.shadow text {
+.map-labels.shadow text {
     fill: #fff;
     stroke: #fff;
     stroke-width: 2px;
     opacity: .7;
 }
 
-.country-labels text {
-    fill: #787878;
-    font-size: 80%;
-    text-transform: uppercase;
-    letter-spacing: 7px;
-    text-anchor: middle;
-    font-family: 'Gotham SSm', Helvetica, Arial,sans-serif;
-    font-weight: normal;
-    -webkit-font-smoothing: antialiased;
-
-    &.primary {
-        fill: #555;
-        font-weight: 700;
-        font-size: 90%;
-    }
-    &.bhutan { display: none; }
+.icons circle {
+    stroke: #000;
+    stroke-width: 1px;
 }
 
-.scale-bar {
-    line {
-        stroke: #666;
-        stroke-width: 5px;
-    }
-    text {
-        font-family: Helvetica, Arial,sans-serif;
-        fill: #666;
-        font-size: 60%;
-        -webkit-font-smoothing: antialiased;
-    }
+.icons text {
+    font-size: 65%;
+    fill: #fff;
+    text-anchor: middle;
+    alignment-baseline: middle;
 }
 
 // responsive styles
 @media screen and (max-width: 500px) {
     svg { font-size: 12px; }
-    .countries path { stroke-width: 2px; }
-    .country-labels text {
-        &.bangladesh,
-        &.bhutan {
-            display: none;
-        }
-    }
-    .city-labels text { letter-spacing: .5px; }
-    .city-labels.shadow { display: none; }
-    .city-labels text,
-    .cities path {
-        &.scalerank-4,
-        &.scalerank-5,
-        &.scalerank-6,
-        &.scalerank-7,
-        &.scalerank-8 {
-            display: none;
-        }
-    }
+    .map-labels text { letter-spacing: .5px; }
+    .map-labels.shadow { display: none; }
 }
