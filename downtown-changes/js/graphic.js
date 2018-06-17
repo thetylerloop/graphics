@@ -104,7 +104,7 @@ var renderLocatorMap = function(config) {
     var aspectHeight = 1;
 
     var bbox = config['data']['bbox'];
-    var defaultScale = 3500000;
+    var defaultScale = 3800000;
 
     // Calculate actual map dimensions
     var mapWidth = config['width'];
@@ -122,12 +122,14 @@ var renderLocatorMap = function(config) {
     /*
      * Create the map projection.
      */
-    var centroid = [((bbox[0] + bbox[2]) / 2), ((bbox[1] + bbox[3]) / 2)];
+    // var centroid = [((bbox[0] + bbox[2]) / 2), ((bbox[1] + bbox[3]) / 2)];
     var mapScale = (mapWidth / DEFAULT_WIDTH) * defaultScale;
     var scaleFactor = mapWidth / DEFAULT_WIDTH;
 
+    var center = [-95.3032, 32.354];
+
     projection = d3.geo.mercator()
-        .center(centroid)
+        .center(center)
         .scale(mapScale)
         .translate([ mapWidth / 4, 0]);
 
@@ -212,6 +214,9 @@ var renderLocatorMap = function(config) {
         .selectAll('.circle')
             .data(STRUCTURE_LABELS)
         .enter().append('circle')
+            .attr('class', function(d) {
+                return 'type-' + d['type'];
+            })
             .attr('transform', function(d) {
                 var point = null;
 
@@ -230,10 +235,7 @@ var renderLocatorMap = function(config) {
             .attr('cy', function(d) {
                 return d['nudge_y'];
             })
-            .attr('r', 12)
-            .attr('fill', function(d) {
-                return d['color'];
-            })
+            .attr('r', 12);
 
     chartElement.append('g')
         .attr('class', 'icons')

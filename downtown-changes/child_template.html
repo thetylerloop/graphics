@@ -9,6 +9,14 @@
         <img src="fallback.png" alt="[Chart]" class="fallback" />
     </div>
 
+    <div id="structure-list">
+        {% for structure in COPY.structure_labels %}
+        <div class="structure">
+            <h3><div class="id type-{{ structure.type }}">{{ structure.id }}</div>{{ structure.name }}</h3>
+        </div>
+        {% endfor %}
+    </div>
+
     {% if COPY.labels.footnote %}
     <div class="footnotes">
         <h4>Notes</h4>

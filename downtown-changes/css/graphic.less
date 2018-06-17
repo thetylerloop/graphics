@@ -2,12 +2,12 @@
 
 svg {
     font-size: 20px;
-    background-color: #ccebc5;
+    background-color: #d8e6d5;
 }
 
 .parcel_structures path {
-    fill: #eee;
-    stroke: #666;
+    fill: #f2f2f2;
+    stroke: #555;
     stroke-width: 0.5px;
 }
 
@@ -17,7 +17,7 @@ svg {
     stroke-width: 1px;
 
     &.type-primary {
-        stroke-width: 4px;
+        stroke-width: 3px;
     }
 
     &.type-secondary {
@@ -36,30 +36,80 @@ svg {
 }
 
 .map-labels text {
-    fill: #000;
-    font-size: 80%;
-    text-anchor: start;
+    fill: #333;
+    font-size: 70%;
+    font-weight: bold;
     font-family: 'Gotham SSm', Helvetica, Arial,sans-serif;
     -webkit-font-smoothing: antialiased;
+    alignment-baseline: middle;
 }
 
 .map-labels.shadow text {
     fill: #fff;
     stroke: #fff;
-    stroke-width: 2px;
+    stroke-width: 3px;
     opacity: .9;
+    font-weight: bold;
 }
 
 .icons circle {
-    stroke: #000;
+    fill: #999;
+    stroke: #333;
     stroke-width: 1px;
+
+    &.type-commercial {
+        fill: #fbb4ae;
+    }
+
+    &.type-residential {
+        fill: #b3cde3;
+    }
+
+    &.type-both {
+        fill: #decbe4;
+    }
+
+    &.type-city {
+        fill: #fed9a6;
+    }
 }
 
 .icons text {
     font-size: 65%;
-    fill: #fff;
+    fill: #333;
     text-anchor: middle;
     alignment-baseline: middle;
+}
+
+#structure-list {
+    .structure {
+        .id {
+            background: #999;
+            color: #333;
+            width: 12px;
+            height: 12px;
+            padding: 6px;
+            text-align: center;
+            border-radius: 50%;
+            border: 1px solid #333;
+
+            &.type-commercial {
+                background: #fbb4ae;
+            }
+        
+            &.type-residential {
+                background: #b3cde3;
+            }
+        
+            &.type-both {
+                background: #decbe4;
+            }
+        
+            &.type-city {
+                background: #fed9a6;
+            }
+        }
+    }
 }
 
 // responsive styles
