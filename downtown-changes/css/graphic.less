@@ -2,18 +2,18 @@
 
 svg {
     font-size: 20px;
-    background-color: #d8e6d5;
+    background-color: #fafafa;
 }
 
 .parcel_structures path {
-    fill: #f2f2f2;
-    stroke: #555;
+    fill: #eeeeee;
+    stroke: #888;
     stroke-width: 0.5px;
 }
 
 .osm_streets path {
     fill: none;
-    stroke: #bbb;
+    stroke: #aaa;
     stroke-width: 1px;
 
     &.type-primary {
@@ -75,7 +75,7 @@ svg {
 }
 
 .icons text {
-    font-size: 65%;
+    font-size: 12px;
     fill: #333;
     text-anchor: middle;
     alignment-baseline: middle;
@@ -83,31 +83,57 @@ svg {
 
 #structure-list {
     .structure {
-        .id {
-            background: #999;
-            color: #333;
-            width: 12px;
-            height: 12px;
-            padding: 6px;
-            text-align: center;
-            border-radius: 50%;
-            border: 1px solid #333;
+        padding-bottom: 16px;
 
-            &.type-commercial {
-                background: #fbb4ae;
+        .header {
+            padding-bottom: 4px;
+
+            .id {
+                font-size: 12px;
+                background: #999;
+                color: #333;
+                width: 24px;
+                line-height: 24px;
+                text-align: center;
+                vertical-align: middle;
+                border-radius: 12px;
+                border: 1px solid #333;
+                display: inline-block;
+
+                &.type-commercial {
+                    background: #fbb4ae;
+                }
+            
+                &.type-residential {
+                    background: #b3cde3;
+                }
+            
+                &.type-both {
+                    background: #decbe4;
+                }
+            
+                &.type-city {
+                    background: #fed9a6;
+                }
             }
-        
-            &.type-residential {
-                background: #b3cde3;
+
+            .name {
+                display: inline-block;
+                vertical-align: middle;
             }
-        
-            &.type-both {
-                background: #decbe4;
-            }
-        
-            &.type-city {
-                background: #fed9a6;
-            }
+        }
+
+        .addr {
+            padding-bottom: 4px;
+            font-family: "Noticia Text";
+            line-height: 20px;
+        }
+
+        .desc {
+            padding-bottom: 4px;
+            font-family: "Noticia Text";
+            line-height: 20px;
+            max-width: 640px;
         }
     }
 }

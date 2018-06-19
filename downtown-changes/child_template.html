@@ -12,7 +12,14 @@
     <div id="structure-list">
         {% for structure in COPY.structure_labels %}
         <div class="structure">
-            <h3><div class="id type-{{ structure.type }}">{{ structure.id }}</div>{{ structure.name }}</h3>
+            <div class="header">
+                <span class="id type-{{ structure.type }}">{{ structure.id }}</span>
+                <div class="name">
+                    <strong>{{ structure.name }}</strong>
+                </div>
+            </div>
+            {% if structure.addr %}<div class="addr">{{ structure.addr }}</div>{% endif %}
+            <div class="desc">{{ structure.desc }}</div>
         </div>
         {% endfor %}
     </div>

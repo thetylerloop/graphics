@@ -1,5 +1,5 @@
 // Global config
-var GEO_DATA_URL = 'assets/topo.json';
+var GEO_DATA_URL = 'data/topo.json';
 
 // Global vars
 var pymChild = null;
