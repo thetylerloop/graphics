@@ -11,6 +11,7 @@
 
     <div id="structure-list">
         {% for structure in COPY.structure_labels %}
+        {% if structure.show == 'TRUE' %}
         <div class="structure">
             <div class="header">
                 <span class="id type-{{ structure.type }}">{{ structure.id }}</span>
@@ -21,6 +22,7 @@
             {% if structure.addr %}<div class="addr">{{ structure.addr }}</div>{% endif %}
             <div class="desc">{{ structure.desc }}</div>
         </div>
+        {% endif %}
         {% endfor %}
     </div>
 
@@ -38,6 +40,9 @@
 
     <script type="text/javascript">
         var STRUCTURE_LABELS = {{ COPY.structure_labels.json() }};
+
+        STRUCTURE_LABELS = STRUCTURE_LABELS.filter(function(s) { return s['show'] == 'TRUE' });
+
         var MAP_LABELS = {{ COPY.map_labels.json() }};
     </script>
 

@@ -13,7 +13,7 @@ var structureLabelsLookup = {};
  * Initialize the graphic.
  */
 var onWindowLoaded = function() {
-    STRUCTURE_LABELS.forEach(function(d){
+    STRUCTURE_LABELS.forEach(function(d) {
         structureLabelsLookup[d['account']] = d;
     });
 
