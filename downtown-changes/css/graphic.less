@@ -33,6 +33,7 @@ svg {
     fill: none;
     stroke: #000;
     stroke-width: 1px;
+    stroke-dasharray: 10,3;
 }
 
 .map-labels text {
@@ -141,5 +142,7 @@ svg {
 // responsive styles
 @media screen and (max-width: 500px) {
     svg { font-size: 12px; }
-    .map-labels text { letter-spacing: .5px; }
+    .map-labels text {
+        letter-spacing: .5px; 
+    }
 }

@@ -237,7 +237,7 @@ var renderLocatorMap = function(config) {
             .attr('cy', function(d) {
                 return d['nudge_y'];
             })
-            .attr('r', 12);
+            .attr('r', isMobile ? 8 : 12 );
 
     chartElement.append('g')
         .attr('class', 'icons')
