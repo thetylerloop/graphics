@@ -104,7 +104,7 @@ var renderLocatorMap = function(config) {
     var aspectHeight = 1;
 
     var bbox = config['data']['bbox'];
-    var defaultScale = 3800000;
+    var defaultScale = 3500000;
 
     // Calculate actual map dimensions
     var mapWidth = config['width'];
@@ -126,7 +126,7 @@ var renderLocatorMap = function(config) {
     var mapScale = (mapWidth / DEFAULT_WIDTH) * defaultScale;
     var scaleFactor = mapWidth / DEFAULT_WIDTH;
 
-    var center = [-95.3032, 32.354];
+    var center = [-95.3034, 32.3547];
 
     projection = d3.geo.mercator()
         .center(center)
@@ -174,12 +174,12 @@ var renderLocatorMap = function(config) {
             })
             .attr('d', path);
 
-    // chartElement.append('g')
-    //     .attr('class', 'railroads')
-    //     .selectAll('path')
-    //         .data(mapData['railroads']['features'])
-    //     .enter().append('path')
-    //         .attr('d', path);
+    chartElement.append('g')
+        .attr('class', 'railroads')
+        .selectAll('path')
+            .data(mapData['railroads']['features'])
+        .enter().append('path')
+            .attr('d', path);
 
     /*
      * Render map labels.
@@ -220,11 +220,13 @@ var renderLocatorMap = function(config) {
             .attr('transform', function(d) {
                 var point = null;
 
-                if (d['account'] != null) {
+                if (d['lng'] != null) {
+                    var lng = parseFloat(d['lng']);
+                    var lat = parseFloat(d['lat']);
+                    point = projection([lng, lat]);
+                } else {
                     var structureGeo = structureGeoLookup[d['account']];
                     point = path.centroid(structureGeo);
-                } else {
-                    point = projection([d['lng'], d['lat']]);
                 }
 
                 return 'translate(' + point + ')';
@@ -248,11 +250,13 @@ var renderLocatorMap = function(config) {
             .attr('transform', function(d) {
                 var point = null;
 
-                if (d['account'] != null) {
+                if (d['lng'] != null) {
+                    var lng = parseFloat(d['lng']);
+                    var lat = parseFloat(d['lat']);
+                    point = projection([lng, lat]);
+                } else {
                     var structureGeo = structureGeoLookup[d['account']];
                     point = path.centroid(structureGeo);
-                } else {
-                    point = projection([d['lng'], d['lat']]);
                 }
 
                 return 'translate(' + point + ')';
