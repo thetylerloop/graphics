@@ -140,7 +140,7 @@ var renderLocatorMap = function(config) {
         
     var colorScale = d3.scale.ordinal()
         .domain(TYPES)
-        .range([COLORS['red5'], COLORS['orange5'], COLORS['yellow5'], COLORS['teal5']]);
+        .range([COLORS['teal5'], COLORS['yellow5'], COLORS['orange5'], COLORS['red5']]);
 
     /*
      * Render a color legend.
