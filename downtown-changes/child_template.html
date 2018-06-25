@@ -14,7 +14,7 @@
         {% if structure.show == 'TRUE' %}
         <div class="structure">
             <div class="header">
-                <span class="id type-{{ structure.type }}">{{ structure.id }}</span>
+                <span class="id type-{{ structure.type.lower().replace(' ', '-') }}">{{  structure.id }}</span>
                 <div class="name">
                     <strong>{{ structure.name }}</strong>
                 </div>

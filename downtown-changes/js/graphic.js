@@ -1,5 +1,6 @@
 // Global config
 var GEO_DATA_URL = 'data/topo.json';
+var TYPES = ['City', 'Residential', 'Commercial', 'Mixed Use'];
 
 // Global vars
 var pymChild = null;
@@ -136,6 +137,32 @@ var renderLocatorMap = function(config) {
     path = d3.geo.path()
         .projection(projection);
         // .pointRadius(cityDotRadius * scaleFactor);
+        
+    var colorScale = d3.scale.ordinal()
+        .domain(TYPES)
+        .range([COLORS['red5'], COLORS['orange5'], COLORS['yellow5'], COLORS['teal5']]);
+
+    /*
+     * Render a color legend.
+     */
+    var legend = containerElement.append('ul')
+        .attr('class', 'key')
+        .selectAll('g')
+            .data(TYPES)
+        .enter().append('li')
+            .attr('class', function(d, i) {
+                return 'key-item key-' + i + ' ' + classify(d);
+            });
+
+    legend.append('b')
+        .style('background-color', function(d) {
+        	return colorScale(d);
+        });
+
+    legend.append('label')
+        .text(function(d) {
+            return d;
+        });
 
     /*
      * Create the root SVG element.
@@ -215,7 +242,10 @@ var renderLocatorMap = function(config) {
             .data(STRUCTURE_LABELS)
         .enter().append('circle')
             .attr('class', function(d) {
-                return 'type-' + d['type'];
+                return 'type-' + classify(d['type']);
+            })
+            .style('fill', function(d) {
+            	return colorScale(d['type']);
             })
             .attr('transform', function(d) {
                 var point = null;

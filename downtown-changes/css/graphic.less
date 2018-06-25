@@ -1,8 +1,17 @@
 @import "base";
 
+@city: #ECA395;
+@residential: #F1C696;
+@commercial: #F7E39B;
+@mixed-use: #8BC0BF;
+
 svg {
     font-size: 20px;
     background-color: #fafafa;
+}
+
+.key {
+    margin-bottom: 15px;
 }
 
 .parcel_structures path {
@@ -57,22 +66,6 @@ svg {
     fill: #999;
     stroke: #333;
     stroke-width: 1px;
-
-    &.type-commercial {
-        fill: #fbb4ae;
-    }
-
-    &.type-residential {
-        fill: #b3cde3;
-    }
-
-    &.type-both {
-        fill: #decbe4;
-    }
-
-    &.type-municipal {
-        fill: #fed9a6;
-    }
 }
 
 .icons text {
@@ -102,19 +95,19 @@ svg {
                 display: inline-block;
 
                 &.type-commercial {
-                    background: #fbb4ae;
+                    background: @commercial;
                 }
             
                 &.type-residential {
-                    background: #b3cde3;
+                    background: @residential;
                 }
             
-                &.type-both {
-                    background: #decbe4;
+                &.type-mixed-use {
+                    background: @mixed-use;
                 }
             
                 &.type-city {
-                    background: #fed9a6;
+                    background: @city;
                 }
             }
 
