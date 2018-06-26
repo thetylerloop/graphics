@@ -47,7 +47,6 @@ svg {
 
 .map-labels text {
     fill: #333;
-    font-size: 70%;
     font-weight: bold;
     font-family: 'Gotham SSm', Helvetica, Arial,sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -136,7 +135,12 @@ svg {
 // responsive styles
 @media screen and (max-width: 500px) {
     svg { font-size: 12px; }
+    
     .map-labels text {
         letter-spacing: .5px; 
+    }
+
+    .railroads path {
+        stroke-width: 0.5px;
     }
 }

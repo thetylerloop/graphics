@@ -228,10 +228,13 @@ var renderLocatorMap = function(config) {
                 .attr('transform', function(d) {
                     return 'translate(' + projection([d['lng'], d['lat']]) + ') rotate(' + d['rotate'] + ')';
                 })
-                .attr('style', function(d) {
-                    return 'text-anchor: ' + (d['anchor'] || 'start');
+                .style('text-anchor', function(d) {
+                    return d['anchor'] || 'start';
                 })
-                .text(function(d) {
+                .style('font-size', function(d) {
+                    return d['font-size'] || '100%';
+                })
+                .html(function(d) {
                     return d['text'];
                 });
     });
