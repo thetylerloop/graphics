@@ -1,26 +1,25 @@
 {% extends 'base_template.html' %}
 
 {% block content %}
-
-    {% if COPY.labels.headline %}<h1>{{ COPY.labels.headline|smarty }}</h1>{% endif %}
-    {% if COPY.labels.subhed %}<h2>{{ render(COPY.labels.subhed)|smarty }}</h2>{% endif %}
-
-    <div id="locator-map" class="graphic">
-        <img src="fallback.png" alt="[Chart]" class="fallback" />
-    </div>
+    <div id="locator-map" class="graphic"></div>
 
     <div id="structure-list">
         {% for structure in COPY.structure_labels %}
         {% if structure.show == 'TRUE' %}
-        <div class="structure">
+        <div class="structure" id="structure-{{ structure.id }}">
             <div class="header">
                 <span class="id type-{{ structure.type.lower().replace(' ', '-') }}">{{  structure.id }}</span>
                 <div class="name">
                     <strong>{{ structure.name }}</strong>
                 </div>
             </div>
-            {% if structure.addr %}<div class="addr">{{ structure.addr }}</div>{% endif %}
+            <div class="details">
+                <span class="nowrap">{{ structure.addr }} <span class="sep">|</span> </span>
+                <span class="nowrap"><strong>Status:</strong> {{ structure.status }} <span class="sep">|</span> </span>
+                <span class="nowrap"><strong>Property Owner:</strong> {{ structure.property_owner }} <span class="sep">|</span> </span> 
+                <span class="nowrap"><strong>Architect:</strong> {{ structure.architect }}</span></div>
             <div class="desc">{{ structure.desc }}</div>
+            <div class="jump-link"><a href="javascript:pymChild.scrollParentToChildEl('locator-map');">Back to map &uarr;</a></div>
         </div>
         {% endif %}
         {% endfor %}

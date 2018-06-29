@@ -250,6 +250,7 @@ var renderLocatorMap = function(config) {
             .style('fill', function(d) {
             	return colorScale(d['type']);
             })
+            .style('cursor', 'pointer')
             .attr('transform', function(d) {
                 var point = null;
 
@@ -270,7 +271,10 @@ var renderLocatorMap = function(config) {
             .attr('cy', function(d) {
                 return d['nudge_y'];
             })
-            .attr('r', isMobile ? 8 : 12 );
+            .attr('r', isMobile ? 8 : 12 )
+            .on("click", function(d) {
+                pymChild.scrollParentToChildEl('structure-' + d['id']);
+            });
 
     chartElement.append('g')
         .attr('class', 'icons')
@@ -294,9 +298,10 @@ var renderLocatorMap = function(config) {
 
                 return 'translate(' + point + ')';
             })
-            .attr('style', function(d) {
-                return 'text-anchor: ' + (d['anchor'] || 'start');
+            .style('text-anchor', function(d) {
+                return d['anchor'] || 'start';
             })
+            .style('cursor', 'pointer')
             .attr('dx', function(d) {
                 return d['nudge_x'] - 4;
             })
@@ -305,6 +310,9 @@ var renderLocatorMap = function(config) {
             })
             .text(function(d) {
                 return d['id'];
+            })
+            .on("click", function(d) {
+                pymChild.scrollParentToChildEl('structure-' + d['id']);
             });
 }
 

@@ -117,10 +117,9 @@ svg {
             }
         }
 
-        .addr {
+        .details {
             padding-bottom: 10px;
             font-family: "Roboto";
-            font-style: italic;
         }
 
         .desc {
@@ -128,6 +127,11 @@ svg {
             font-family: "Noticia Text";
             line-height: 28px;
             max-width: 640px;
+        }
+
+        .jump-link {
+            font-size: 0.85em;
+            text-align: right;
         }
     }
 }
@@ -142,5 +146,16 @@ svg {
 
     .railroads path {
         stroke-width: 0.5px;
+    }
+
+    .details span {
+        .sep {
+            display: none;
+        }
+        
+        &:after {
+            content: '\A';
+            white-space: pre;
+        }
     }
 }
