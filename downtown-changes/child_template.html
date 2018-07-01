@@ -14,10 +14,12 @@
                 </div>
             </div>
             <div class="details">
-                <span class="nowrap">{{ structure.addr }} <span class="sep">|</span> </span>
-                <span class="nowrap"><strong>Status:</strong> {{ structure.status }} <span class="sep">|</span> </span>
-                <span class="nowrap"><strong>Property Owner:</strong> {{ structure.property_owner }} <span class="sep">|</span> </span> 
-                <span class="nowrap"><strong>Architect:</strong> {{ structure.architect }}</span></div>
+                <span class="nowrap">{{ structure.addr }} </span>
+                <span class="nowrap"><strong><span class="sep">|</span> Status:</strong> {{ structure.status }} </span>
+                <span class="nowrap"><strong><span class="sep">|</span> Property Owner:</strong> {{ structure.property_owner }} </span> 
+                {% if structure.architect %}<span class="nowrap"><strong><span class="sep">|</span> Architect:</strong> {{ structure.architect }}</span>{% endif %}
+            </div>
+            {% if structure.img %}<img src="images/{{ structure.img }}" />{% endif %}
             <div class="desc">{{ structure.desc }}</div>
             <div class="jump-link"><a href="javascript:pymChild.scrollParentToChildEl('locator-map');">Back to map &uarr;</a></div>
         </div>
