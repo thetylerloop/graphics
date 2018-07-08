@@ -140,7 +140,7 @@ var renderLineChart = function(config) {
 
     // Mobile
     if (isMobile) {
-        ticksX = 7;
+        ticksX = 10;
         ticksY = 6;
         margins['right'] = 5;
     }
@@ -157,7 +157,7 @@ var renderLineChart = function(config) {
      * Create D3 scale objects.
      */
     var xScale = d3.time.scale()
-        .domain([new Date(1990, 1, 1), new Date(2018, 4, 1)])
+        .domain([new Date(1999, 1, 1), new Date(2019, 1, 1)])
         .range([ 0, chartWidth ])
 
     var min = d3.min(config['data'], function(d) {
@@ -226,6 +226,10 @@ var renderLineChart = function(config) {
         .orient('bottom')
         .ticks(ticksX)
         .tickFormat(function(d, i) {
+            if (isMobile) {
+                return "'" + fmtYearAbbrev(d);
+            }
+
             return fmtYearFull(d);
         });
 
