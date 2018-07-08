@@ -1,0 +1,42 @@
+@import "base";
+
+.lines {
+    fill: none;
+    stroke-width: 2px;
+    stroke: #ccc;
+}
+
+.value text {
+    font-size: 12px;
+    font-weight: bold;
+    fill: #999;
+}
+
+.annotations {
+    .arrow {
+        stroke-width: 1.5px;
+        stroke: #aaa;
+        fill: none;
+    }
+
+    text {
+        font-size: 14px;
+        fill: #aaa;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .lines {
+        stroke-width: 1.5px;
+    }
+
+    .value text {
+        font-size: 10px;
+    }
+}
+
+@media screen and (min-width: 500px) {
+    .key {
+        display: none;
+    }
+}

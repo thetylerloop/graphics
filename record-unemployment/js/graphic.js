@@ -1,0 +1,358 @@
+var ANNOTATIONS = [
+    {
+        'x': new Date(2007, 8, 1),
+        'y': 6.8,
+        'text': 'Crash',
+        'anchor': 'end',
+        'rotate': 0,
+        'line': [
+            [new Date(2007, 10, 1), 5.2],
+            [new Date(2008, 4, 1), 8.2]
+        ]
+    }, {
+        'x': new Date(2013, 8, 1),
+        'y': 8.5,
+        'text': 'Recovery',
+        'anchor': 'middle',
+        'rotate': 0,
+        'line': [
+            [new Date(2013, 4, 1), 8],
+            [new Date(2017, 9, 1), 5]
+        ]
+    }
+]
+
+// Global vars
+var pymChild = null;
+var isMobile = false;
+var dataSeries = [];
+
+/*
+ * Initialize graphic
+ */
+var onWindowLoaded = function() {
+    if (Modernizr.svg) {
+        formatData();
+
+        pymChild = new pym.Child({
+            renderCallback: render
+        });
+    } else {
+        pymChild = new pym.Child({});
+    }
+
+    pymChild.onMessage('on-screen', function(bucket) {
+        ANALYTICS.trackEvent('on-screen', bucket);
+    });
+    pymChild.onMessage('scroll-depth', function(data) {
+        data = JSON.parse(data);
+        ANALYTICS.trackEvent('scroll-depth', data.percent, data.seconds);
+    });
+}
+
+/*
+ * Format graphic data for processing by D3.
+ */
+var formatData = function() {
+    DATA.forEach(function(d) {
+        d['date'] = d3.time.format('%Y-%m-%d').parse(d['date']);
+
+        for (var key in d) {
+            if (key != 'date' && d[key] != null && d[key].length > 0) {
+                d[key] = +d[key];
+            }
+        }
+    });
+
+    /*
+     * Restructure tabular data for easier charting.
+     */
+    for (var column in DATA[0]) {
+        if (column == 'date') {
+            continue;
+        }
+
+        dataSeries.push({
+            'name': column,
+            'values': DATA.map(function(d) {
+                return {
+                    'date': d['date'],
+                    'amt': d[column]
+                };
+    // filter out empty data. uncomment this if you have inconsistent data.
+    //        }).filter(function(d) {
+    //            return d['amt'] != null;
+            })
+        });
+    }
+}
+
+/*
+ * Render the graphic(s). Called by pym with the container width.
+ */
+var render = function(containerWidth) {
+    if (!containerWidth) {
+        containerWidth = DEFAULT_WIDTH;
+    }
+
+    if (containerWidth <= MOBILE_THRESHOLD) {
+        isMobile = true;
+    } else {
+        isMobile = false;
+    }
+
+    // Render the chart!
+    renderLineChart({
+        container: '#line-chart',
+        width: containerWidth,
+        data: dataSeries
+    });
+
+    // Update iframe
+    if (pymChild) {
+        pymChild.sendHeight();
+    }
+}
+
+/*
+ * Render a line chart.
+ */
+var renderLineChart = function(config) {
+    /*
+     * Setup
+     */
+    var dateColumn = 'date';
+    var valueColumn = 'amt';
+
+    var aspectWidth = isMobile ? 4 : 16;
+    var aspectHeight = isMobile ? 3 : 9;
+
+    var margins = {
+        top: 7,
+        right: 20,
+        bottom: 20,
+        left: 38
+    };
+
+    var ticksX = 10;
+    var ticksY = 10;
+    var roundTicksFactor = 5;
+
+    // Mobile
+    if (isMobile) {
+        ticksX = 7;
+        ticksY = 6;
+        margins['right'] = 5;
+    }
+
+    // Calculate actual chart dimensions
+    var chartWidth = config['width'] - margins['left'] - margins['right'];
+    var chartHeight = Math.ceil((config['width'] * aspectHeight) / aspectWidth) - margins['top'] - margins['bottom'];
+
+    // Clear existing graphic (for redraw)
+    var containerElement = d3.select(config['container']);
+    containerElement.html('');
+
+    /*
+     * Create D3 scale objects.
+     */
+    var xScale = d3.time.scale()
+        .domain([new Date(1990, 1, 1), new Date(2018, 4, 1)])
+        .range([ 0, chartWidth ])
+
+    var min = d3.min(config['data'], function(d) {
+        return d3.min(d['values'], function(v) {
+            return Math.floor(v[valueColumn] / roundTicksFactor) * roundTicksFactor;
+        })
+    });
+
+    if (min > 0) {
+        min = 0;
+    }
+
+    var max = d3.max(config['data'], function(d) {
+        return d3.max(d['values'], function(v) {
+            return Math.ceil(v[valueColumn] / roundTicksFactor) * roundTicksFactor;
+        })
+    });
+
+    var yScale = d3.scale.linear()
+        .domain([min, max])
+        .range([chartHeight, 0]);
+
+    var colorScale = d3.scale.ordinal()
+        .domain(_.pluck(config['data'], 'name'))
+        .range([COLORS['red3'], COLORS['yellow3'], COLORS['blue3'], COLORS['orange3'], COLORS['teal3']]);
+
+    /*
+     * Render the HTML legend.
+     */
+    // var legend = containerElement.append('ul')
+    //     .attr('class', 'key')
+    //     .selectAll('g')
+    //     .data(config['data'])
+    //     .enter().append('li')
+    //         .attr('class', function(d, i) {
+    //             return 'key-item ' + classify(d['name']);
+    //         });
+
+    // legend.append('b')
+    //     .style('background-color', function(d) {
+    //         return colorScale(d['name']);
+    //     });
+
+    // legend.append('label')
+    //     .text(function(d) {
+    //         return d['name'];
+    //     });
+
+    /*
+     * Create the root SVG element.
+     */
+    var chartWrapper = containerElement.append('div')
+        .attr('class', 'graphic-wrapper');
+
+    var chartElement = chartWrapper.append('svg')
+        .attr('width', chartWidth + margins['left'] + margins['right'])
+        .attr('height', chartHeight + margins['top'] + margins['bottom'])
+        .append('g')
+        .attr('transform', 'translate(' + margins['left'] + ',' + margins['top'] + ')');
+
+    /*
+     * Create D3 axes.
+     */
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient('bottom')
+        .ticks(ticksX)
+        .tickFormat(function(d, i) {
+            return fmtYearFull(d);
+        });
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient('left')
+        .ticks(ticksY)
+        .tickFormat(function(d, i) {
+            if (d == 10) {
+                return d + '%';
+            }
+
+            return d;
+        });
+
+    /*
+     * Render axes to chart.
+     */
+    chartElement.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', makeTranslate(0, chartHeight))
+        .call(xAxis);
+
+    chartElement.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis);
+
+    /*
+     * Render grid to chart.
+     */
+    var xAxisGrid = function() {
+        return xAxis;
+    }
+
+    var yAxisGrid = function() {
+        return yAxis;
+    }
+
+    chartElement.append('g')
+        .attr('class', 'x grid')
+        .attr('transform', makeTranslate(0, chartHeight))
+        .call(xAxisGrid()
+            .tickSize(-chartHeight, 0, 0)
+            .tickFormat('')
+        );
+
+    chartElement.append('g')
+        .attr('class', 'y grid')
+        .call(yAxisGrid()
+            .tickSize(-chartWidth, 0, 0)
+            .tickFormat('')
+        );
+
+    /*
+     * Render lines to chart.
+     */
+    var line = d3.svg.line()
+        .interpolate('monotone')
+        .x(function(d) {
+            return xScale(d[dateColumn]);
+        })
+        .y(function(d) {
+            return yScale(d[valueColumn]);
+        });
+
+    chartElement.append('g')
+        .attr('class', 'lines')
+        .selectAll('path')
+        .data(config['data'])
+        .enter()
+        .append('path')
+            .attr('class', function(d, i) {
+                return 'line ' + classify(d['name']);
+            })
+            .attr('stroke', function(d) {
+                return colorScale(d['name']);
+            })
+            .attr('d', function(d) {
+                return line(d['values']);
+            });
+
+    // Arrows!
+    chartElement.append('defs')
+         .append('marker')
+         .attr('id','arrowhead')
+         .attr('orient','auto')
+         .attr('viewBox','0 0 5.108 8.18')
+         .attr('markerHeight','8.18')
+         .attr('markerWidth','5.108')
+         .attr('orient','auto')
+         .attr('refY','4.09')
+         .attr('refX','5')
+         .append('polygon')
+         .attr('points','0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999')
+         .attr('fill','#aaa')
+
+    var arrowLine = d3.svg.line()
+        .interpolate('basis')
+        .x(function(d) {
+            return xScale(d[0]);
+        })
+        .y(function(d) {
+            return yScale(d[1]);
+        });
+
+    var annotations = chartElement.append('g')
+        .attr('class', 'annotations');
+
+    _.each(ANNOTATIONS, function(ann) {
+        if (ann['line']) {
+            annotations.append('path')
+                .attr('class', 'arrow')
+                .attr('d', arrowLine(ann['line']))
+                .style('marker-end', 'url(#arrowhead)');
+        }
+
+        annotations.append('text')
+            .attr('transform', function(d) {
+                return "translate(" + xScale(ann['x']) + "," + yScale(ann['y']) + ")rotate(" + ann['rotate'] + ")";
+            })
+            .attr('text-anchor', ann['anchor'])
+            .html(ann['text']);
+    })
+}
+
+/*
+ * Initially load the graphic
+ * (NB: Use window.load to ensure all images have loaded)
+ */
+window.onload = onWindowLoaded;
