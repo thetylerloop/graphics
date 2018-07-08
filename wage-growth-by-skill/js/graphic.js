@@ -1,27 +1,3 @@
-var ANNOTATIONS = [
-    {
-        'x': new Date(2007, 8, 1),
-        'y': 6.8,
-        'text': 'Crash',
-        'anchor': 'end',
-        'rotate': 0,
-        'line': [
-            [new Date(2007, 10, 1), 5.2],
-            [new Date(2008, 4, 1), 8.2]
-        ]
-    }, {
-        'x': new Date(2013, 8, 1),
-        'y': 8.5,
-        'text': 'Recovery',
-        'anchor': 'middle',
-        'rotate': 0,
-        'line': [
-            [new Date(2013, 4, 1), 8],
-            [new Date(2017, 9, 1), 5]
-        ]
-    }
-]
-
 // Global vars
 var pymChild = null;
 var isMobile = false;
@@ -55,7 +31,7 @@ var onWindowLoaded = function() {
  */
 var formatData = function() {
     DATA.forEach(function(d) {
-        d['date'] = d3.time.format('%Y-%m-%d').parse(d['date']);
+        d['date'] = d3.time.format('%m/%d/%y').parse(d['date']);
 
         for (var key in d) {
             if (key != 'date' && d[key] != null && d[key].length > 0) {
@@ -141,7 +117,7 @@ var renderLineChart = function(config) {
     // Mobile
     if (isMobile) {
         ticksX = 10;
-        ticksY = 6;
+        ticksY = 10;
         margins['right'] = 5;
     }
 
@@ -160,51 +136,35 @@ var renderLineChart = function(config) {
         .domain([new Date(1999, 1, 1), new Date(2019, 1, 1)])
         .range([ 0, chartWidth ])
 
-    var min = d3.min(config['data'], function(d) {
-        return d3.min(d['values'], function(v) {
-            return Math.floor(v[valueColumn] / roundTicksFactor) * roundTicksFactor;
-        })
-    });
-
-    if (min > 0) {
-        min = 0;
-    }
-
-    var max = d3.max(config['data'], function(d) {
-        return d3.max(d['values'], function(v) {
-            return Math.ceil(v[valueColumn] / roundTicksFactor) * roundTicksFactor;
-        })
-    });
-
     var yScale = d3.scale.linear()
-        .domain([min, max])
+        .domain([0, 7])
         .range([chartHeight, 0]);
 
     var colorScale = d3.scale.ordinal()
         .domain(_.pluck(config['data'], 'name'))
-        .range([COLORS['red3'], COLORS['yellow3'], COLORS['blue3'], COLORS['orange3'], COLORS['teal3']]);
+        .range([COLORS['yellow3'], COLORS['blue3'], COLORS['orange3'], COLORS['teal3']]);
 
     /*
      * Render the HTML legend.
      */
-    // var legend = containerElement.append('ul')
-    //     .attr('class', 'key')
-    //     .selectAll('g')
-    //     .data(config['data'])
-    //     .enter().append('li')
-    //         .attr('class', function(d, i) {
-    //             return 'key-item ' + classify(d['name']);
-    //         });
+    var legend = containerElement.append('ul')
+        .attr('class', 'key')
+        .selectAll('g')
+        .data(config['data'])
+        .enter().append('li')
+            .attr('class', function(d, i) {
+                return 'key-item ' + classify(d['name']);
+            });
 
-    // legend.append('b')
-    //     .style('background-color', function(d) {
-    //         return colorScale(d['name']);
-    //     });
+    legend.append('b')
+        .style('background-color', function(d) {
+            return colorScale(d['name']);
+        });
 
-    // legend.append('label')
-    //     .text(function(d) {
-    //         return d['name'];
-    //     });
+    legend.append('label')
+        .text(function(d) {
+            return d['name'];
+        });
 
     /*
      * Create the root SVG element.
@@ -234,16 +194,16 @@ var renderLineChart = function(config) {
         });
 
     var yAxis = d3.svg.axis()
-        .scale(yScale)
-        .orient('left')
-        .ticks(ticksY)
-        .tickFormat(function(d, i) {
-            if (d == 10) {
-                return d + '%';
-            }
+    .scale(yScale)
+    .orient('left')
+    .ticks(ticksY)
+    .tickFormat(function(d, i) {
+        if (d == 7) {
+            return d + '%';
+        }
 
-            return d;
-        });
+        return d;
+    });
 
     /*
      * Render axes to chart.
@@ -310,49 +270,6 @@ var renderLineChart = function(config) {
             .attr('d', function(d) {
                 return line(d['values']);
             });
-
-    // Arrows!
-    chartElement.append('defs')
-         .append('marker')
-         .attr('id','arrowhead')
-         .attr('orient','auto')
-         .attr('viewBox','0 0 5.108 8.18')
-         .attr('markerHeight','8.18')
-         .attr('markerWidth','5.108')
-         .attr('orient','auto')
-         .attr('refY','4.09')
-         .attr('refX','5')
-         .append('polygon')
-         .attr('points','0.745,8.05 0.07,7.312 3.71,3.986 0.127,0.599 0.815,-0.129 5.179,3.999')
-         .attr('fill','#aaa')
-
-    var arrowLine = d3.svg.line()
-        .interpolate('basis')
-        .x(function(d) {
-            return xScale(d[0]);
-        })
-        .y(function(d) {
-            return yScale(d[1]);
-        });
-
-    var annotations = chartElement.append('g')
-        .attr('class', 'annotations');
-
-    _.each(ANNOTATIONS, function(ann) {
-        if (ann['line']) {
-            annotations.append('path')
-                .attr('class', 'arrow')
-                .attr('d', arrowLine(ann['line']))
-                .style('marker-end', 'url(#arrowhead)');
-        }
-
-        annotations.append('text')
-            .attr('transform', function(d) {
-                return "translate(" + xScale(ann['x']) + "," + yScale(ann['y']) + ")rotate(" + ann['rotate'] + ")";
-            })
-            .attr('text-anchor', ann['anchor'])
-            .html(ann['text']);
-    })
 }
 
 /*
