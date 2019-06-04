@@ -264,7 +264,7 @@ var renderLocatorMap = function(config) {
             .attr('cy', function(d) {
                 return d['nudge_y'];
             })
-            .attr('r', isMobile ? 8 : 12 )
+            .attr('r', isMobile ? 10 : 14 )
             .on("click", function(d) {
                 pymChild.scrollParentToChildEl('structure-' + d['id']);
             });
@@ -299,7 +299,7 @@ var renderLocatorMap = function(config) {
                 return d['nudge_x'] - 4;
             })
             .attr('dy', function(d) {
-                return d['nudge_y'];
+                return d['nudge_y'] + 1;
             })
             .text(function(d) {
                 return d['id'];
