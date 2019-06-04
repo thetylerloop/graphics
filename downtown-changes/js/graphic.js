@@ -137,13 +137,9 @@ var renderLocatorMap = function(config) {
     path = d3.geo.path()
         .projection(projection);
         // .pointRadius(cityDotRadius * scaleFactor);
-        
-    var colorScale = d3.scale.ordinal()
-        .domain(TYPES)
-        .range([COLORS['teal5'], COLORS['yellow5'], COLORS['orange5'], COLORS['red5']]);
 
     /*
-     * Render a color legend.
+     * Render a legend.
      */
     var legend = containerElement.append('ul')
         .attr('class', 'key')
@@ -151,12 +147,12 @@ var renderLocatorMap = function(config) {
             .data(TYPES)
         .enter().append('li')
             .attr('class', function(d, i) {
-                return 'key-item key-' + i + ' ' + classify(d);
+                return 'key-item key-' + i;
             });
 
     legend.append('b')
-        .style('background-color', function(d) {
-        	return colorScale(d);
+        .attr('class', function(d, i) {
+            return 'type-' + classify(d);
         });
 
     legend.append('label')
@@ -246,9 +242,6 @@ var renderLocatorMap = function(config) {
         .enter().append('circle')
             .attr('class', function(d) {
                 return 'type-' + classify(d['type']);
-            })
-            .style('fill', function(d) {
-            	return colorScale(d['type']);
             })
             .style('cursor', 'pointer')
             .attr('transform', function(d) {
